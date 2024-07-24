@@ -5,11 +5,11 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/_components/ui/navigation-menu"
 import Link from "next/link"
-import ModeToggle from "@/components/modeToggle"
+import ModeToggle from "@/_components/modeToggle"
 import { useEffect, useState } from "react"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/_components/ui/button"
 import { LuUserCircle2 } from "react-icons/lu";
 import Image from "next/image"
 import logo from "@/../public/logo.png"
@@ -17,7 +17,7 @@ import { PiSignInFill, PiSignOutBold } from "react-icons/pi";
 import { usePathname } from "next/navigation"
 import { ImSpinner9 } from "react-icons/im"
 import { IoIosArrowDown } from "react-icons/io"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/popover"
 
 
 export default function NavMenu() {
