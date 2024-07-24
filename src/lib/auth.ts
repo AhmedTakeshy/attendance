@@ -32,7 +32,7 @@ export const {
     signOut,
     auth } = NextAuth({
         pages: {
-            signIn: '/signin',
+            signIn: '/login',
         },
         adapter: PrismaAdapter(prisma),
         session: {
