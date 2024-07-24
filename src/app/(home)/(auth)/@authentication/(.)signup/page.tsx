@@ -1,5 +1,5 @@
 "use client"
-import SignUpForm from '../../signup/_components/SignUpForm'
+import SignUpForm from '../../_components/SignUpForm'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/_components/ui/dialog"
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'

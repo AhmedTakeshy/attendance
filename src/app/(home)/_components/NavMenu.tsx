@@ -63,8 +63,8 @@ export default function NavMenu() {
             </NavigationMenu>
             <div className="items-center gap-3 hidden md:flex">
                 <Button variant={"outline"} asChild>
-                    <Link href="/signin" className="flex items-center">
-                        Sign In
+                    <Link href="/login" className="flex items-center">
+                        Login
                         <PiSignInFill className="ml-2" />
                     </Link>
                 </Button>
@@ -112,8 +112,8 @@ export default function NavMenu() {
                                 </NavigationMenuList>
                             </NavigationMenu>
                             <Button asChild>
-                                <Link href="/signin" className="flex items-center w-full">
-                                    Sign In
+                                <Link href="/login" className="flex items-center w-full">
+                                    Login
                                     <PiSignInFill className="ml-2" />
                                 </Link>
                             </Button>

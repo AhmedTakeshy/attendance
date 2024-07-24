@@ -1,5 +1,5 @@
 "use client"
-import LoginForm from "../../login/_components/loginForm"
+import LoginForm from "../../_components/loginForm"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/_components/ui/dialog"
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from "react"
@@ -14,7 +14,7 @@ export default function Page() {
     setIsOpened(val)
   }
   useEffect(() => {
-    handleOpen(pathname.includes("/signin"))
+    handleOpen(pathname.includes("/login"))
   }, [pathname])
 
   return (
