@@ -15,7 +15,7 @@ export const contactSchema = z.object({
     })
 });
 
-export const signInFormSchema = z.object({
+export const loginFormSchema = z.object({
     email: z.string().trim().email({
         message: "Please enter a valid email address",
     }),
@@ -73,7 +73,7 @@ export const passwordSchema = z.object({
 })
 
 export type ContactSchema = z.infer<typeof contactSchema>
-export type SignInFormSchema = z.infer<typeof signInFormSchema>
+export type LoginFormSchema = z.infer<typeof loginFormSchema>
 export type SignUpFormSchema = z.infer<typeof signUpFormSchema>
 export type UserUpdateSchema = z.infer<typeof userUpdateSchema>
 export type PasswordSchema = z.infer<typeof passwordSchema>

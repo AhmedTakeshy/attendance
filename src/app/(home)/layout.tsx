@@ -3,19 +3,17 @@ import NavMenu from "./_components/NavMenu"
 
 export default function MainLayout({
     children,
-    auth,
+    authentication,
 }: {
     children: React.ReactNode
-    auth: React.ReactNode
+    authentication: React.ReactNode
 }) {
 
     return (
-        <>
-            <AuthProvider>
-                <NavMenu />
-                {children}
-                {auth}
-            </AuthProvider>
-        </>
+        <AuthProvider>
+            <NavMenu />
+            {children}
+            {authentication}
+        </AuthProvider>
     )
 }

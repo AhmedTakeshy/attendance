@@ -1,6 +1,6 @@
 export const publicRoutes = ["/", "/library", "/about", "/contact",];
 
-export const authRoutes = ["/signin", "/signup"];
+export const authRoutes = ["/login", "/signup"];
 
 //We make sure the authentication API route is always public.
 export const apiRoute = "/api/auth";
