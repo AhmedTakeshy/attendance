@@ -15,7 +15,7 @@ import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { toast } from "sonner"
-import { SignInFormSchema, signInFormSchema } from "@/lib/formSchemas"
+import { LoginFormSchema, loginFormSchema } from "@/lib/formSchemas"
 // import SubmitButton from "@/components/SubmitButton"
 import Link from "next/link"
 // import { signIn } from "next-auth/react"
@@ -24,15 +24,15 @@ import Link from "next/link"
 
 
 
-export default function SignInForm() {
+export default function LoginForm() {
 
     const [isPending, setIsPending] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter()
 
 
-    const form = useForm<SignInFormSchema>({
-        resolver: zodResolver(signInFormSchema),
+    const form = useForm<LoginFormSchema>({
+        resolver: zodResolver(loginFormSchema),
         defaultValues: {
             email: "",
             password: "",
@@ -41,10 +41,10 @@ export default function SignInForm() {
 
 
 
-    async function signInCredentials(data: SignInFormSchema) {
+    async function signInCredentials(data: LoginFormSchema) {
         setIsPending(true)
         try {
-            const result = await signInFormSchema.safeParseAsync(data)
+            const result = await loginFormSchema.safeParseAsync(data)
             if (!result.success) {
                 toast.error("Error!", {
                     description: "Something went wrong with the form data. Please try again.",

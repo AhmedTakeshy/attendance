@@ -1,5 +1,5 @@
 "use client"
-import SignInForm from "../../signin/_components/SignInForm"
+import LoginForm from "../../login/_components/loginForm"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/_components/ui/dialog"
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from "react"
@@ -24,7 +24,7 @@ export default function Page() {
           <DialogHeader>
             <DialogTitle>Login</DialogTitle>
           </DialogHeader>
-          <SignInForm />
+          <LoginForm />
         </DialogContent>
       </Dialog>
     </div>
