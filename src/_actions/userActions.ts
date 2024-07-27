@@ -1,4 +1,4 @@
-import "server-only";
+"use server"
 import {
     ContactSchema,
     PasswordSchema,
@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt, { hash } from "bcryptjs";
 import { User } from "@prisma/client";
-import { signIn } from "@/lib/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 
@@ -60,7 +60,7 @@ export async function signUpAction(values: SignUpFormSchema) {
         }
         const hashedPassword = await hash(password, 10)
         if (!existedUserEmail) {
-            await prisma.user.create({
+            const user = await prisma.user.create({
                 data: {
                     firstName,
                     lastName,
@@ -69,13 +69,13 @@ export async function signUpAction(values: SignUpFormSchema) {
                 }
             })
 
-            await signIn("credentials", {
-                email,
-                password,
-                redirectTo: DEFAULT_LOGIN_REDIRECT
-            })
 
-            return { error: false, message: `User has been created successfully with this email ${email}`, status: 201 }
+            return {
+                error: false,
+                message: `User has been created successfully with this email:
+                ${email}`,
+                status: 201
+            }
         }
     } catch (error) {
         return { error: true, message: "Something went wrong!", status: 401 }
@@ -169,5 +169,23 @@ export async function getUserByEmail(email: string): Promise<ServerResponse<User
             status: "Error",
             errorMessage: "Internal Server Error",
         }
+    }
+}
+
+
+export async function login(provider: Provider) {
+    try {
+        if (provider.type === "credentials") {
+            await signIn(provider.type, {
+                redirect: false,
+                email: provider.email.toLowerCase(),
+                password: provider.password,
+            })
+        } else {
+            await signIn(provider.type)
+        }
+        return { error: false, message: "User has been logged in successfully.", status: 200 }
+    } catch (error) {
+        return { error: true, message: "Something went wrong!", status: 401 }
     }
 }

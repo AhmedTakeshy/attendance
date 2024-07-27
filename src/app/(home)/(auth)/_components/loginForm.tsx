@@ -12,13 +12,17 @@ import {
 } from "@/_components/ui/form"
 import { Input } from "@/_components/ui/input"
 import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { LoginFormSchema, loginFormSchema } from "@/lib/formSchemas"
-// import SubmitButton from "@/components/SubmitButton"
+import SubmitButton from "@/_components/submitButton"
 import Link from "next/link"
-// import { signIn } from "next-auth/react"
+import LoginWithProvider from "./loginWithProvider"
+import BottomGradient from "@/_components/bottomGradient"
+import { login } from "@/_actions/userActions"
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
+
 
 
 
@@ -29,6 +33,7 @@ export default function LoginForm() {
     const [isPending, setIsPending] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter()
+    const searchParams = useSearchParams()
 
 
     const form = useForm<LoginFormSchema>({
@@ -41,7 +46,7 @@ export default function LoginForm() {
 
 
 
-    async function signInCredentials(data: LoginFormSchema) {
+    async function signIn(data: LoginFormSchema) {
         setIsPending(true)
         try {
             const result = await loginFormSchema.safeParseAsync(data)
@@ -52,39 +57,45 @@ export default function LoginForm() {
                 return
             }
             const { email, password } = result.data
-            // const res = await signIn("credentials", {
-            //     redirect: false,
-            //     email: email.toLowerCase(),
-            //     password,
-            // })
-            // if (res?.status === 200) {
-            //     router.push(`/`)
-            // } else {
-            //     toast("Oops!", {
-            //         description: "Please check your email and password and try again.",
-            //     })
-            // }
+            const res = await login({ type: "credentials", email: email.toLowerCase(), password })
+            if (res?.status === 200) {
+                toast.success("Successfully", {
+                    description: `Welcome back, ${email}`,
+                })
+                router.push(searchParams.get("callbackUrl") || DEFAULT_LOGIN_REDIRECT)
+
+            } else {
+                toast.error("Oops!", {
+                    description: "Please check your email and password and try again.",
+                })
+            }
         } catch (error) {
-            toast("Error!", {
+            toast.error("Error!", {
                 description: "Something went wrong. Please try again.",
             })
+            setIsPending(false)
         }
-        setIsPending(false)
     }
 
     return (
         <Form {...form} >
-            <div className="w-full max-sm:max-w-xs p-4 mb-4 space-y-2 border-2 rounded-md border-slate-800 dark:border-slate-400">
-                <form onSubmit={form.handleSubmit(signInCredentials)}
-                    className="space-y-2">
+            <div className="w-full max-sm:max-w-xs mx-auto md:p-8 p-4 rounded-sm md:rounded-2xl shadow-input ">
+                <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+                    Welcome to Attendance
+                </h2>
+                <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+                    Login to attendance to create a table and start tracking your attendance.
+                </p>
+                <form onSubmit={form.handleSubmit(signIn)}
+                    className="my-8">
                     <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
+                            <FormItem className="flex flex-col space-y-2 w-full mb-4">
+                                <FormLabel htmlFor="email">Email</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="example@email.com" {...field} />
+                                    <Input id="email" placeholder="example@email.com" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -94,17 +105,18 @@ export default function LoginForm() {
                         control={form.control}
                         name="password"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
+                            <FormItem className="flex flex-col space-y-2 w-full mb-4">
+                                <FormLabel htmlFor="password">Password</FormLabel>
                                 <FormControl>
                                     <div className="relative">
-                                        <Input placeholder="*******" {...field} type={`${showPassword ? "text" : "password"}`} />
+                                        <Input id="password" placeholder="*******" {...field} type={`${showPassword ? "text" : "password"}`} />
                                         {showPassword ?
                                             <PiEyeBold
                                                 className={`hover:cursor-pointer absolute right-[10%] bottom-[28%]`}
                                                 onClick={() => setShowPassword(false)} /> :
                                             <PiEyeClosedBold
-                                                className={`hover:cursor-pointer absolute right-[10%] bottom-[28%]`} onClick={() => setShowPassword(true)} />
+                                                className={`hover:cursor-pointer absolute right-[10%] bottom-[28%]`}
+                                                onClick={() => setShowPassword(true)} />
                                         }
                                     </div>
                                 </FormControl>
@@ -113,9 +125,16 @@ export default function LoginForm() {
                         )}
                     />
 
-                    {/* <SubmitButton className="w-full !mt-6" text="Login" pending={isPending} /> */}
+                    <SubmitButton
+                        className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                        pending={isPending}>
+                        Login &rarr;
+                        <BottomGradient />
+                    </SubmitButton>
+                    <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+                    <LoginWithProvider />
                 </form>
-                <div className="flex items-center justify-center !mt-6 md:justify-between">
+                <div className="flex items-center justify-center mt-6 md:justify-between">
                     <div className="block w-5/12 h-px dark:bg-gray-300 bg-slate-800"></div>
                     <p className="mx-2 text-sm font-semibold dark:text-gray-400 text-slate-900">OR</p>
                     <div className="block w-5/12 h-px dark:bg-gray-300 bg-slate-800"></div>

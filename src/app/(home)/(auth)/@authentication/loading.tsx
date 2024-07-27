@@ -11,6 +11,5 @@ export default function Loading() {
                 </DialogContent>
             </Dialog>
         </div>
-
     )
 }

@@ -21,7 +21,7 @@ declare module "next-auth" {
     }
 
     interface User {
-        id?: string
+        id?: string;
         role: string;
     }
 }
@@ -36,7 +36,8 @@ export const {
         },
         adapter: PrismaAdapter(prisma),
         session: {
-            maxAge: 30 * 24 * 60 * 60,
+            strategy: "jwt",
+            maxAge: 432000,
         },
         ...authConfig,
 

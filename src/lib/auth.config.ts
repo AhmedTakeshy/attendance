@@ -2,6 +2,7 @@ import { prisma } from "./prisma"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import type { NextAuthConfig } from "next-auth";
+import { User } from "next-auth"
 
 export default {
     providers: [
@@ -27,7 +28,7 @@ export default {
                     name: existingUser.firstName + " " + existingUser.lastName,
                     email: existingUser.email,
                     role: existingUser.role ?? "USER",
-                }
+                } as User
             }
         }),
     ],
