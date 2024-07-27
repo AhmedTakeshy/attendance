@@ -15,7 +15,7 @@ type Props = Readonly<{
   children: React.ReactNode;
 }>;
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body className={inter.className}>

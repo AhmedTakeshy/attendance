@@ -1,4 +1,4 @@
-import { FlipWords } from "@/_components/flip-words";
+import { FlipWords } from "@/app/(home)/_components/flipWords";
 import { Button } from "@/_components/ui/button";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ export default function Home() {
         </div>
       </div>
       <Button asChild>
-        <Link href="/signin" className="flex items-center bg-blue-500 hover:bg-blue-700 transition-colors duration-300">
+        <Link href="/login" className="flex items-center bg-blue-500 hover:bg-blue-700 transition-colors duration-300">
           Create attendance table
         </Link>
       </Button>
