@@ -8,27 +8,30 @@ import {
 } from "@/_components/ui/navigation-menu"
 import Link from "next/link"
 import ModeToggle from "@/_components/modeToggle"
-import { useEffect, useState } from "react"
-import { Button, buttonVariants } from "@/_components/ui/button"
-import { LuUserCircle2 } from "react-icons/lu";
+import { useState } from "react"
+import { Button } from "@/_components/ui/button"
 import Image from "next/image"
 import logo from "@/../public/logo.png"
-import { PiSignInFill, PiSignOutBold } from "react-icons/pi";
-import { usePathname } from "next/navigation"
+import { PiSignInFill, PiSignOutFill } from "react-icons/pi";
 import { ImSpinner9 } from "react-icons/im"
-import { IoIosArrowDown } from "react-icons/io"
 import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/popover"
+import { signOut, useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+
 
 
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
-    const pathname = usePathname()
+    const session = useSession()
 
 
-    useEffect(() => {
-        setOpen(false)
-    }, [pathname])
-
+    function logoutAction() {
+        signOut({ callbackUrl: "/login" })
+        toast.success("Logout", {
+            description: "Goodbye, see you soon",
+        })
+    }
 
 
 
@@ -62,12 +65,23 @@ export default function NavMenu() {
                 </NavigationMenuList>
             </NavigationMenu>
             <div className="items-center gap-3 hidden md:flex">
-                <Button variant={"outline"} asChild>
-                    <Link href="/login" className="flex items-center">
-                        Login
-                        <PiSignInFill className="ml-2" />
-                    </Link>
-                </Button>
+                {session.status === "loading" ?
+                    <Button variant={"outline"} className="w-full">
+                        <ImSpinner9 className="animate-spin ease-in-out" />
+                    </Button>
+                    :
+                    session.status === "authenticated" ?
+                        <Button variant={"outline"} onClick={logoutAction}>
+                            Logout
+                            <PiSignOutFill className="ml-2" />
+                        </Button>
+                        :
+                        <Button variant={"outline"} asChild>
+                            <Link href="/login" className="flex items-center">
+                                Login
+                                <PiSignInFill className="ml-2" />
+                            </Link>
+                        </Button>}
                 <ModeToggle />
             </div>
 
@@ -111,12 +125,22 @@ export default function NavMenu() {
                                     </NavigationMenuItem>
                                 </NavigationMenuList>
                             </NavigationMenu>
-                            <Button asChild>
-                                <Link href="/login" className="flex items-center w-full">
-                                    Login
-                                    <PiSignInFill className="ml-2" />
-                                </Link>
-                            </Button>
+                            {session.status === "loading" ?
+                                <Button variant={"outline"} className="w-full">
+                                    <ImSpinner9 className="animate-spin ease-in-out" />
+                                </Button> :
+                                session?.data ?
+                                    <Button variant={"outline"} onClick={logoutAction} className="w-full">
+                                        Logout
+                                        <PiSignOutFill className="ml-2" />
+                                    </Button>
+                                    :
+                                    <Button variant={"outline"} asChild>
+                                        <Link href="/login" className="flex items-center w-full">
+                                            Login
+                                            <PiSignInFill className="ml-2" />
+                                        </Link>
+                                    </Button>}
                         </div>
                     </PopoverContent>
                 </Popover>
