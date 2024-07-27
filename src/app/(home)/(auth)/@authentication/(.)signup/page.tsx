@@ -1,6 +1,6 @@
 "use client"
 import SignUpForm from '../../_components/SignUpForm'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/_components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/_components/ui/dialog"
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -17,15 +17,18 @@ export default function Page() {
         handleOpen(pathname.includes("/signup"))
     }, [pathname])
     return (
-        <div className='flex items-center justify-center mt-12 max-w-md w-full mx-auto'>
-            <Dialog open={isOpened} onOpenChange={() => { setIsOpened(prev => !prev); router.push("/") }}>
-                <DialogContent aria-describedby={"Sign up form for users"}>
-                    <DialogHeader>
-                        <DialogTitle>Sign up</DialogTitle>
-                    </DialogHeader>
-                    <SignUpForm />
-                </DialogContent>
-            </Dialog>
-        </div>
+        <Dialog open={isOpened} onOpenChange={() => { setIsOpened(prev => !prev); router.push("/") }}>
+            <DialogContent className='p-0 rounded-sm md:rounded-2xl'>
+                <DialogHeader className="sr-only">
+                    <DialogTitle className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+                        Welcome to Attendance
+                    </DialogTitle>
+                    <DialogDescription className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+                        Sign up to attendance to create a table and start tracking your attendance.
+                    </DialogDescription>
+                </DialogHeader>
+                <SignUpForm />
+            </DialogContent>
+        </Dialog>
     )
 }
