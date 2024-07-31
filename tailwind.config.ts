@@ -23,9 +23,39 @@ const config = {
     },
     extend: {
       boxShadow: {
-        input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
+        input: `0px 2px 3px -1px hsla(0, 0%, 0%, 0.1), 0px 1px 0px 0px hsla(218, 14%, 11%, 0.02), 0px 0px 0px 1px hsla(218, 14%, 11%, 0.08)`,
       },
       colors: {
+        lightPrimary: "hsl(222, 83%, 98%)",
+        blueSecondary: "hsl(251, 100%, 55%)",
+        brandLinear: "hsl(237, 100%, 76%)",
+        navy: {
+          50: "hsl(223, 84%, 90%)",
+          100: "hsl(224, 98%, 83%)",
+          200: "hsl(224, 86%, 81%)",
+          300: "hsl(226, 74%, 68%)",
+          400: "hsl(227, 55%, 47%)",
+          500: "hsl(228, 75%, 42%)",
+          600: "hsl(228, 59%, 34%)",
+          700: "hsl(228, 47%, 20%)",
+          800: "hsl(227, 60%, 17%)",
+          900: "hsl(228, 67%, 13%)",
+        },
+        brand: {
+          50: "hsl(253, 100%, 95%)",
+          100: "hsl(247, 97%, 86%)",
+          200: "hsl(247, 96%, 79%)",
+          300: "hsl(247, 96%, 72%)",
+          400: "hsl(252, 100%, 66%)",
+          500: "hsl(247, 96%, 57%)",
+          600: "hsl(250, 86%, 46%)",
+          700: "hsl(246, 81%, 36%)",
+          800: "hsl(248, 91%, 30%)",
+          900: "hsl(247, 94%, 25%)",
+        },
+        shadow: {
+          500: "hsla(210, 29%, 56%, 0.08)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -61,6 +91,7 @@ const config = {
         },
       },
       borderRadius: {
+        "2.5xl": "1.25rem",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
