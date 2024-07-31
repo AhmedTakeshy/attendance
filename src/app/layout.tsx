@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
 import { Toaster } from "@/_components/ui/sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const dm = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Attendance App",
@@ -18,7 +21,7 @@ type Props = Readonly<{
 export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${dm.className} antialiased `}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

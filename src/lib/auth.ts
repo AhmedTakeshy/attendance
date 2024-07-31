@@ -42,13 +42,19 @@ export const {
         ...authConfig,
 
         callbacks: {
+            async jwt({ token, user, account, profile }) {
+                if (user) {
+                    token.id = user.id
+                    token.role = user.role
+                }
+                return token
+            },
             async session({ session, user, token }) {
                 if (session.user) {
-                    session.user.id = user?.id ?? session.user.id
-                    session.user.role = user?.role ?? "USER"
+                    session.user.id = token.id as string ?? session.user.id
+                    session.user.role = token.role as string ?? "USER"
                 }
                 return session
             },
-
         }
     })

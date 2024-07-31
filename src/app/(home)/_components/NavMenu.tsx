@@ -12,17 +12,22 @@ import { useState } from "react"
 import { Button } from "@/_components/ui/button"
 import Image from "next/image"
 import logo from "@/../public/logo.png"
-import { PiSignInFill, PiSignOutFill } from "react-icons/pi";
+import { PiSignInBold, PiSignOutBold } from "react-icons/pi";
 import { ImSpinner9 } from "react-icons/im"
 import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/popover"
 import { signOut, useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/_components/ui/dropdown-menu"
+import { LuUserCircle2 } from "react-icons/lu"
+import { IoIosArrowDown } from "react-icons/io"
+import { BiTable } from "react-icons/bi"
+import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 
 
 
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
+    const [iconDown, setIconDown] = useState<boolean>(false)
     const session = useSession()
 
 
@@ -33,12 +38,13 @@ export default function NavMenu() {
         })
     }
 
+    session.status === "authenticated" && console.log(session.data.user.id)
 
 
     return (
         <header className={`flex mt-6 mb-10 mx-auto md:justify-around justify-between items-center w-full md:px-8 px-3`}>
             <Link href="/" aria-describedby="open home page" aria-label="open home page" aria-controls="navbar-default" aria-expanded="false">
-                <Image src={logo} width={200} height={75} alt="logo" priority className="w-auto h-auto" />
+                <Image src={logo} width={256} height={96} alt="logo" priority className="sm:w-64 sm:h-24 w-48 h-16" />
             </Link>
             <NavigationMenu className={` items-center  justify-between hidden gap-2 md:flex`}>
                 <NavigationMenuList className="items-center justify-between hidden gap-2 md:flex ">
@@ -71,22 +77,131 @@ export default function NavMenu() {
                     </Button>
                     :
                     session.status === "authenticated" ?
-                        <Button variant={"outline"} onClick={logoutAction}>
-                            Logout
-                            <PiSignOutFill className="ml-2" />
-                        </Button>
+                        <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
+                            <DropdownMenuTrigger asChild>
+                                <Avatar className="hover:cursor-pointer">
+                                    <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
+                                    <AvatarFallback>
+                                        {`${session.data.user.name?.split(" ")[0][0]}${session.data.user.name?.split(" ")[1][0]}`}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 rounded-2.5xl">
+                                <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem asChild>
+                                        <Link href={`/profile`}
+                                            aria-label="open profile"
+                                            aria-controls="navbar-default"
+                                            aria-expanded="false"
+                                            className="hover:cursor-pointer hover:text-navy-400">
+                                            <LuUserCircle2 className="w-5 h-5 mr-2 " />
+                                            Profile
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            href={`/students/${session.data.user.id}/tables`}
+                                            aria-label="open wishlist"
+                                            aria-controls="navbar-default"
+                                            aria-expanded="false"
+                                            className="hover:text-indigo-600 hover:cursor-pointer">
+                                            <BiTable className="w-5 h-5  mr-2" />
+                                            All Tables
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    {session.data.user.role === "ADMIN" && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href={`/dashboard`}
+                                                aria-label="open profile"
+                                                aria-controls="navbar-default"
+                                                aria-expanded="false"
+                                                className="hover:cursor-pointer hover:text-cyan-400">
+                                                <LuUserCircle2 className="w-5 h-5 mr-2 " />
+                                                Dashboard
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        asChild
+                                        onClick={logoutAction}>
+                                        <span className="hover:text-red-600 hover:cursor-pointer">
+                                            <PiSignOutBold className="w-5 h-5 mr-2" />
+                                            Logout
+                                        </span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         :
                         <Button variant={"outline"} asChild>
                             <Link href="/login" className="flex items-center">
                                 Login
-                                <PiSignInFill className="ml-2" />
+                                <PiSignInBold className="ml-2" />
                             </Link>
                         </Button>}
                 <ModeToggle />
             </div>
 
             {/* Nav for small screens */}
-            < div className={`flex items-center justify-between h-full md:hidden rounded-xl `}>
+            < div className={`flex items-center gap-3 justify-between h-full md:hidden rounded-xl `}>
+                {!!session.data &&
+                    <div className="items-center gap-3 flex">
+                        <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
+                            <DropdownMenuTrigger asChild>
+                                <Avatar className="hover:cursor-pointer">
+                                    <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
+                                    <AvatarFallback>
+                                        {`${session.data.user.name?.split(" ")[0][0]}${session.data.user.name?.split(" ")[1][0]}`}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 rounded-2.5xl">
+                                <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem asChild>
+                                        <Link href={`${session.data.user.role === "USER" ? "/profile" : "/dashboard"}`}
+                                            aria-label="open profile"
+                                            aria-controls="navbar-default"
+                                            aria-expanded="false"
+                                            className="hover:cursor-pointer hover:text-blue-400">
+                                            <LuUserCircle2 className="w-5 h-5 mr-2 " />
+                                            {session.data.user.role === "USER" ? "Profile" : "Dashboard"}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            href={`/students/${session.data.user.id}/tables`}
+                                            aria-label="open wishlist"
+                                            aria-controls="navbar-default"
+                                            aria-expanded="false"
+                                            className="hover:text-indigo-600 hover:cursor-pointer">
+                                            <BiTable className="w-5 h-5  mr-2" />
+                                            All Tables
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        asChild
+                                        onClick={logoutAction}>
+                                        <span className="hover:text-red-600 hover:cursor-pointer">
+                                            <PiSignOutBold className="w-5 h-5 mr-2" />
+                                            Logout
+                                        </span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <ModeToggle />
+                    </div>
+                }
                 <Popover onOpenChange={setOpen} open={open}>
                     <PopoverTrigger aria-controls="2" aria-labelledby="open menu button" asChild>
                         <div className="flex items-center gap-2">
@@ -96,10 +211,9 @@ export default function NavMenu() {
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
                                 </svg>
                             </Button>
-                            <ModeToggle />
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="relative w-screen mx-px top-2">
+                    <PopoverContent className="relative w-screen mx-px top-2 bg-lightPrimary">
                         <div className="flex flex-col items-center mx-auto">
                             <NavigationMenu>
                                 <NavigationMenuList className="flex flex-col items-center justify-center gap-2">
@@ -129,21 +243,64 @@ export default function NavMenu() {
                                 <Button variant={"outline"} className="w-full">
                                     <ImSpinner9 className="animate-spin ease-in-out" />
                                 </Button> :
-                                session?.data ?
-                                    <Button variant={"outline"} onClick={logoutAction} className="w-full">
-                                        Logout
-                                        <PiSignOutFill className="ml-2" />
-                                    </Button>
-                                    :
-                                    <Button variant={"outline"} asChild>
-                                        <Link href="/login" className="flex items-center w-full">
-                                            Login
-                                            <PiSignInFill className="ml-2" />
-                                        </Link>
-                                    </Button>}
+                                !session?.data &&
+                                // <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
+                                //     <DropdownMenuTrigger asChild>
+                                //         <Button className="w-full my-2 mx-2 flex items-center">
+                                //             {session.data.user.name}
+                                //             <IoIosArrowDown className={`w-4 h-4 transition-transform duration-300 ml-2 ${iconDown ? "rotate-180" : ""}`} />
+                                //         </Button>
+                                //     </DropdownMenuTrigger>
+                                //     <DropdownMenuContent className="w-screen ">
+                                //         <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                //         <DropdownMenuSeparator />
+                                //         <DropdownMenuGroup>
+                                //             <DropdownMenuItem asChild>
+                                //                 <Link href={`${session.data.user.role === "USER" ? "/profile" : "/dashboard"}`}
+                                //                     aria-label="open profile"
+                                //                     aria-controls="navbar-default"
+                                //                     aria-expanded="false"
+                                //                     className="hover:cursor-pointer group">
+                                //                     <LuUserCircle2 className="w-5 h-5 mr-2 group-hover:text-blue-400" />
+                                //                     {session.data.user.role === "USER" ? "Profile" : "Dashboard"}
+                                //                 </Link>
+                                //             </DropdownMenuItem>
+                                //             <DropdownMenuItem asChild>
+                                //                 <Link
+                                //                     href={`/students/${session.data.user.id}/tables`}
+                                //                     aria-label="open wishlist"
+                                //                     aria-controls="navbar-default"
+                                //                     aria-expanded="false"
+                                //                     className="group hover:cursor-pointer">
+                                //                     <BiTable className="w-5 h-5 group-hover:animate-pumping-heart group-hover:text-indigo-600 mr-2" />
+                                //                     All Tables
+                                //                 </Link>
+                                //             </DropdownMenuItem>
+                                //         </DropdownMenuGroup>
+                                //         <DropdownMenuSeparator />
+                                //         <DropdownMenuGroup>
+                                //             <DropdownMenuItem
+                                //                 asChild
+                                //                 onClick={logoutAction}>
+                                //                 <span className="group hover:cursor-pointer w-full">
+                                //                     <PiSignOutBold className="w-5 h-5 group-hover:text-red-600 mr-2" />
+                                //                     Logout
+                                //                 </span>
+                                //             </DropdownMenuItem>
+                                //         </DropdownMenuGroup>
+                                //     </DropdownMenuContent>
+                                // </DropdownMenu>
+                                // :
+                                <Button variant={"outline"} asChild>
+                                    <Link href="/login" className="flex items-center w-full">
+                                        Login
+                                        <PiSignInBold className="ml-2" />
+                                    </Link>
+                                </Button>}
                         </div>
                     </PopoverContent>
                 </Popover>
+
             </div >
         </header >
     )
