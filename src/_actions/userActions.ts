@@ -13,8 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt, { hash } from "bcryptjs";
 import { User } from "@prisma/client";
-import { auth, signIn, signOut } from "@/lib/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { signIn, } from "@/lib/auth";
 
 
 export async function contactFormAction(values: ContactSchema): Promise<ServerResponse<null>> {

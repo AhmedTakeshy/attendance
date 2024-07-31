@@ -6,4 +6,4 @@ export const authRoutes = ["/login", "/signup"];
 export const apiRoute = "/api/auth";
 
 // redirect users to this path after login
-export const DEFAULT_LOGIN_REDIRECT = "/students";
+export const DEFAULT_LOGIN_REDIRECT = "/";
