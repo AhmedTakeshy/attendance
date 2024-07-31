@@ -2,7 +2,8 @@ import { login } from "@/_actions/userActions"
 import BottomGradient from "@/_components/bottomGradient"
 import SubmitButton from "@/_components/submitButton"
 import { useState } from "react"
-import { LuGithub } from "react-icons/lu"
+import { RiFacebookCircleLine, RiInstagramLine } from "react-icons/ri"
+import { FcGoogle } from "react-icons/fc"
 
 export default function LoginWithProvider() {
     const [isPending, setIsPending] = useState<boolean>(false)
@@ -22,9 +23,9 @@ export default function LoginWithProvider() {
                 disabled={isPending}
                 pending={isPending}
                 onClick={() => loginWithProvider({ type: "google" })}
-                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             >
-                <LuGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+                <FcGoogle className="h-4 w-4" />
                 <span className="text-neutral-700 dark:text-neutral-300 text-sm">
                     Google
                 </span>
@@ -34,9 +35,9 @@ export default function LoginWithProvider() {
                 disabled={isPending}
                 pending={isPending}
                 onClick={() => loginWithProvider({ type: "facebook" })}
-                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             >
-                <LuGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+                <RiFacebookCircleLine className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
                 <span className="text-neutral-700 dark:text-neutral-300 text-sm">
                     Facebook
                 </span>
@@ -46,9 +47,9 @@ export default function LoginWithProvider() {
                 disabled={isPending}
                 pending={isPending}
                 onClick={() => loginWithProvider({ type: "instagram" })}
-                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             >
-                <LuGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+                <RiInstagramLine className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
                 <span className="text-neutral-700 dark:text-neutral-300 text-sm">
                     Instagram
                 </span>
