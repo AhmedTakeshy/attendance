@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import type { NextAuthConfig } from "next-auth";
 import { User } from "next-auth"
-import { createId } from "./utils";
+import { createPublicId } from "./utils";
 
 export default {
     providers: [
@@ -25,7 +25,7 @@ export default {
                 const isPasswordValid = await bcrypt.compare(password.toString(), existingUser.password)
                 if (!isPasswordValid) return null;
                 return {
-                    id: createId(existingUser.publicId, existingUser.id),
+                    id: createPublicId(existingUser.publicId, existingUser.id),
                     name: existingUser.firstName + " " + existingUser.lastName,
                     email: existingUser.email,
                     role: existingUser.role ?? "USER",

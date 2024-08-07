@@ -19,7 +19,6 @@ import { signOut, useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/_components/ui/dropdown-menu"
 import { LuUserCircle2 } from "react-icons/lu"
-import { IoIosArrowDown } from "react-icons/io"
 import { BiTable } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 
@@ -27,9 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
-    const [iconDown, setIconDown] = useState<boolean>(false)
     const session = useSession()
-
 
     function logoutAction() {
         signOut({ callbackUrl: "/login" })
@@ -37,9 +34,6 @@ export default function NavMenu() {
             description: "Goodbye, see you soon",
         })
     }
-
-    session.status === "authenticated" && console.log(session.data.user.id)
-
 
     return (
         <header className={`flex mt-6 mb-10 mx-auto md:justify-around justify-between items-center w-full md:px-8 px-3`}>
@@ -77,7 +71,7 @@ export default function NavMenu() {
                     </Button>
                     :
                     session.status === "authenticated" ?
-                        <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
+                        <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="hover:cursor-pointer">
                                     <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
@@ -151,7 +145,7 @@ export default function NavMenu() {
             < div className={`flex items-center gap-3 justify-between h-full md:hidden rounded-xl `}>
                 {!!session.data &&
                     <div className="items-center gap-3 flex">
-                        <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
+                        <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="hover:cursor-pointer">
                                     <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
