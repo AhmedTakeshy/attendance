@@ -2,6 +2,14 @@ type ServerResponse<T> =
     { successMessage: string, data: T; status: "Success"; statusCode: number } |
     { errorMessage: string; status: "Error"; statusCode: number };
 
+type Metadata<T> = {
+    students: T;
+    metadata: {
+        hasNextPage: boolean;
+        totalPages: number;
+    }
+}
+
 type CredentialsProvider = {
     type: "credentials";
     email: string;
