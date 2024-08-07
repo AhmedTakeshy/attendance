@@ -96,6 +96,9 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        'diagonal': "url('/diagonal-lines.svg')",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
