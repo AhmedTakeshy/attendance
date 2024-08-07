@@ -101,6 +101,8 @@ CREATE TABLE "Table" (
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "userId" INTEGER NOT NULL,
     "libraryId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Table_pkey" PRIMARY KEY ("id")
 );
@@ -110,8 +112,13 @@ CREATE TABLE "Subject" (
     "id" SERIAL NOT NULL,
     "publicId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3) NOT NULL,
+    "endTime" TIMESTAMP(3) NOT NULL,
     "tableId" INTEGER NOT NULL,
-    "absences" INTEGER NOT NULL DEFAULT 4,
+    "absences" INTEGER NOT NULL DEFAULT 0,
+    "attendances" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
 );
