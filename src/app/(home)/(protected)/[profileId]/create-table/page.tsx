@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth"
-import AttendanceTableForm from "./attendanceTableForm"
+import AttendanceTableForm from "./_components/attendanceTableForm"
 
 export default async function page() {
     const session = await auth()

@@ -6,15 +6,17 @@ type Props = {
     search?: string
     page: number
     studentId: number
+    isPublic?: boolean
 }
 
-type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: Table[] }
+export type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: Table[] }
+export type UserWithTableCount = Omit<User, "password" | "createdAt" | "updatedAt"> & { tableCount: number }
 
-export async function getStudents({ search, page = 1, studentId }: Props): Promise<ServerResponse<Metadata<UserWithTables[]>>> {
+export async function getStudents({ search, page = 1, studentId }: Props): Promise<ServerResponse<Metadata<{ students: UserWithTableCount[] }>>> {
     try {
         const students = await prisma.user.findMany({
             where: {
-                role: "USER",
+                // role: "USER",
                 id: { not: studentId },
                 OR: [
                     { firstName: { contains: search, mode: "insensitive" } },
@@ -32,9 +34,13 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
                 image: true,
                 emailVerified: true,
                 isTwoFactorEnabled: true,
-                tables: {
-                    where: {
-                        isPublic: true
+                _count: {
+                    select: {
+                        tables: {
+                            where: {
+                                isPublic: true
+                            }
+                        }
                     }
                 }
             },
@@ -44,7 +50,7 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
 
         const totalStudents = await prisma.user.count({
             where: {
-                role: "USER",
+                // role: "USER",
                 id: { not: studentId },
                 OR: [
                     { firstName: { contains: search, mode: "insensitive" } },
@@ -58,7 +64,10 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
             successMessage: "Students fetched successfully",
             status: "Success",
             data: {
-                students,
+                students: students.map((student) => ({
+                    ...student,
+                    tableCount: student._count.tables
+                })),
                 metadata: {
                     hasNextPage: totalStudents > page * 9,
                     totalPages: Math.ceil(totalStudents / 9)
@@ -74,18 +83,32 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
     }
 }
 
-export async function getStudentById({ page = 1, studentId }: Props): Promise<ServerResponse<{ student: UserWithTables }>> {
+export async function getStudentTables({ page = 1, studentId, isPublic, search }: Props): Promise<ServerResponse<Metadata<{ student: UserWithTables }>>> {
     try {
         const student = await prisma.user.findUnique({
             where: {
-                id: studentId
+                id: studentId,
             },
-            include: {
+            select: {
+                id: true,
+                publicId: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+                image: true,
+                emailVerified: true,
+                isTwoFactorEnabled: true,
                 tables: {
                     where: {
-                        isPublic: true
-                    }
-                }
+                        isPublic,
+                        OR: [
+                            { name: { contains: search, mode: "insensitive" } },
+                        ]
+                    },
+                    skip: (page - 1) * 9,
+                    take: 9,
+                },
             }
         })
 
@@ -97,17 +120,88 @@ export async function getStudentById({ page = 1, studentId }: Props): Promise<Se
             }
         }
 
+        const totalTables = await prisma.table.count({
+            where: {
+                userId: studentId,
+                isPublic,
+                OR: [
+                    { name: { contains: search, mode: "insensitive" } },
+                ]
+            }
+        })
+
         return {
             statusCode: 200,
-            successMessage: "Student fetched successfully",
+            successMessage: "Tables fetched successfully",
             status: "Success",
-            data: { student }
+            data: {
+                student: {
+                    ...student,
+                    tables: student?.tables || [],
+                },
+                metadata: {
+                    hasNextPage: totalTables > page * 9,
+                    totalPages: Math.ceil(totalTables / 9)
+                }
+            }
         }
     } catch (error) {
         return {
             statusCode: 500,
+            errorMessage: "Failed to fetch tables",
             status: "Error",
-            errorMessage: "Internal Server Error"
         }
     }
 }
+
+// export async function getStudentById({ studentId }: Props): Promise<ServerResponse<{ student: UserWithTableCount }>> {
+//     try {
+//         const student = await prisma.user.findUnique({
+//             where: {
+//                 id: studentId
+//             },
+//             select: {
+//                 id: true,
+//                 publicId: true,
+//                 firstName: true,
+//                 lastName: true,
+//                 email: true,
+//                 role: true,
+//                 image: true,
+//                 emailVerified: true,
+//                 isTwoFactorEnabled: true,
+//                 _count: {
+//                     select: {
+//                         tables: true
+//                     }
+//                 }
+//             }
+//         })
+
+//         if (!student) {
+//             return {
+//                 statusCode: 404,
+//                 status: "Error",
+//                 errorMessage: "Student not found"
+//             }
+//         }
+
+//         return {
+//             statusCode: 200,
+//             successMessage: "Student fetched successfully",
+//             status: "Success",
+//             data: {
+//                 student: {
+//                     ...student,
+//                     tableCount: student._count.tables
+//                 }
+//             }
+//         }
+//     } catch (error) {
+//         return {
+//             statusCode: 500,
+//             status: "Error",
+//             errorMessage: "Internal Server Error"
+//         }
+//     }
+// }
