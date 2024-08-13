@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "DayName" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
+
+-- CreateEnum
 CREATE TYPE "SubscriptionPeriod" AS ENUM ('ONE_MONTH', 'THREE_MONTHS', 'SIX_MONTHS', 'ONE_YEAR');
 
 -- CreateEnum
@@ -108,15 +111,24 @@ CREATE TABLE "Table" (
 );
 
 -- CreateTable
+CREATE TABLE "Day" (
+    "id" SERIAL NOT NULL,
+    "name" "DayName" NOT NULL,
+    "tableId" INTEGER NOT NULL,
+
+    CONSTRAINT "Day_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Subject" (
     "id" SERIAL NOT NULL,
     "publicId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
-    "tableId" INTEGER NOT NULL,
-    "absences" INTEGER NOT NULL DEFAULT 0,
-    "attendances" INTEGER NOT NULL DEFAULT 0,
+    "startTime" TEXT NOT NULL,
+    "endTime" TEXT NOT NULL,
+    "dayId" INTEGER NOT NULL,
+    "absence" INTEGER NOT NULL DEFAULT 0,
+    "attendance" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -219,13 +231,16 @@ CREATE INDEX "Table_isPublic_idx" ON "Table"("isPublic");
 CREATE INDEX "Table_userId_idx" ON "Table"("userId");
 
 -- CreateIndex
+CREATE INDEX "Day_tableId_idx" ON "Day"("tableId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Subject_publicId_key" ON "Subject"("publicId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subject_name_key" ON "Subject"("name");
 
 -- CreateIndex
-CREATE INDEX "Subject_tableId_idx" ON "Subject"("tableId");
+CREATE INDEX "Subject_dayId_idx" ON "Subject"("dayId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Library_publicId_key" ON "Library"("publicId");
@@ -261,7 +276,10 @@ ALTER TABLE "Table" ADD CONSTRAINT "Table_userId_fkey" FOREIGN KEY ("userId") RE
 ALTER TABLE "Table" ADD CONSTRAINT "Table_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Subject" ADD CONSTRAINT "Subject_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "Table"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Day" ADD CONSTRAINT "Day_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "Table"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Subject" ADD CONSTRAINT "Subject_dayId_fkey" FOREIGN KEY ("dayId") REFERENCES "Day"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PublicTableView" ADD CONSTRAINT "PublicTableView_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET DEFAULT ON UPDATE CASCADE;
