@@ -19,7 +19,6 @@ import SubmitButton from "@/_components/submitButton"
 import { login, signUpAction } from "@/_actions/userActions"
 import { useRouter } from "next/navigation"
 import BottomGradient from "@/_components/bottomGradient"
-import { DialogDescription, DialogHeader, DialogTitle } from "@/_components/ui/dialog"
 import LoginWithProvider from "./loginWithProvider"
 
 

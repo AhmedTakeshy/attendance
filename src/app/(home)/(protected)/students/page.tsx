@@ -61,13 +61,13 @@ export default async function page({ searchParams }: Props) {
                                 <div className="mt-6 mb-3 flex justify-center items-center gap-14 md:!gap-14">
                                     <div className="flex flex-col items-center justify-center">
                                         <p className="text-2xl font-bold text-navy-700 dark:text-white">
-                                            {student.tables.length}
+                                            {student.tableCount}
                                         </p>
                                         <p className="text-sm font-normal text-gray-600">Tables</p>
                                     </div>
                                     <Button asChild className="bg-brand-600 transition-colors duration-300 hover:bg-brand-800">
-                                        <Link href={`/students/${publicId}`}>
-                                            View Tables
+                                        <Link href={`/students/${publicId}?tablesPage=1`}>
+                                            View profile
                                         </Link>
                                     </Button>
                                 </div>

@@ -12,7 +12,7 @@ import { useState } from "react"
 import { Button } from "@/_components/ui/button"
 import Image from "next/image"
 import logo from "@/../public/logo.png"
-import { PiSignInBold, PiSignOutBold } from "react-icons/pi";
+import { PiSignInBold, PiSignOutBold, PiStudentFill } from "react-icons/pi";
 import { ImSpinner9 } from "react-icons/im"
 import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/popover"
 import { signOut, useSession } from "next-auth/react"
@@ -21,6 +21,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { LuUserCircle2 } from "react-icons/lu"
 import { BiTable } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
+import { MdSpaceDashboard } from "react-icons/md"
 
 
 
@@ -80,29 +81,29 @@ export default function NavMenu() {
                                     </AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56 rounded-2.5xl">
+                            <DropdownMenuContent className="w-56 rounded-2.5xl dark:bg-navy-800">
                                 <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild>
-                                        <Link href={`/profile`}
+                                        <Link href={`/${session.data.user.id}?tablesPage=1`}
                                             aria-label="open profile"
                                             aria-controls="navbar-default"
                                             aria-expanded="false"
-                                            className="hover:cursor-pointer hover:text-navy-400">
+                                            className="hover:cursor-pointer hover:!text-navy-400">
                                             <LuUserCircle2 className="w-5 h-5 mr-2 " />
                                             Profile
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
                                         <Link
-                                            href={`/students/${session.data.user.id}/tables`}
+                                            href={`/students`}
                                             aria-label="open wishlist"
                                             aria-controls="navbar-default"
                                             aria-expanded="false"
-                                            className="hover:text-indigo-600 hover:cursor-pointer">
-                                            <BiTable className="w-5 h-5  mr-2" />
-                                            All Tables
+                                            className="hover:cursor-pointer hover:!text-indigo-600">
+                                            <PiStudentFill className="w-5 h-5  mr-2" />
+                                            Students
                                         </Link>
                                     </DropdownMenuItem>
                                     {session.data.user.role === "ADMIN" && (
@@ -111,8 +112,8 @@ export default function NavMenu() {
                                                 aria-label="open profile"
                                                 aria-controls="navbar-default"
                                                 aria-expanded="false"
-                                                className="hover:cursor-pointer hover:text-cyan-400">
-                                                <LuUserCircle2 className="w-5 h-5 mr-2 " />
+                                                className="hover:cursor-pointer hover:!text-cyan-400">
+                                                <MdSpaceDashboard className="w-5 h-5 mr-2 " />
                                                 Dashboard
                                             </Link>
                                         </DropdownMenuItem>
@@ -123,7 +124,7 @@ export default function NavMenu() {
                                     <DropdownMenuItem
                                         asChild
                                         onClick={logoutAction}>
-                                        <span className="hover:text-red-600 hover:cursor-pointer">
+                                        <span className="hover:cursor-pointer hover:!text-red-600">
                                             <PiSignOutBold className="w-5 h-5 mr-2" />
                                             Logout
                                         </span>
@@ -154,38 +155,50 @@ export default function NavMenu() {
                                     </AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56 rounded-2.5xl">
+                            <DropdownMenuContent className="w-56 rounded-2.5xl dark:bg-navy-800">
                                 <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild>
-                                        <Link href={`${session.data.user.role === "USER" ? "/profile" : "/dashboard"}`}
+                                        <Link href={`/${session.data.user.id}?tablesPage=1`}
                                             aria-label="open profile"
                                             aria-controls="navbar-default"
                                             aria-expanded="false"
-                                            className="hover:cursor-pointer hover:text-blue-400">
+                                            className="hover:cursor-pointer hover:!text-blue-400">
                                             <LuUserCircle2 className="w-5 h-5 mr-2 " />
-                                            {session.data.user.role === "USER" ? "Profile" : "Dashboard"}
+                                            Profile
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
                                         <Link
-                                            href={`/students/${session.data.user.id}/tables`}
+                                            href={`/students`}
                                             aria-label="open wishlist"
                                             aria-controls="navbar-default"
                                             aria-expanded="false"
-                                            className="hover:text-indigo-600 hover:cursor-pointer">
-                                            <BiTable className="w-5 h-5  mr-2" />
-                                            All Tables
+                                            className="hover:cursor-pointer hover:!text-indigo-600">
+                                            <PiStudentFill className="w-5 h-5  mr-2" />
+                                            Students
                                         </Link>
                                     </DropdownMenuItem>
+                                    {session.data.user.role === "ADMIN" && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href={`/dashboard`}
+                                                aria-label="open profile"
+                                                aria-controls="navbar-default"
+                                                aria-expanded="false"
+                                                className="hover:cursor-pointer hover:!text-cyan-400">
+                                                <MdSpaceDashboard className="w-5 h-5 mr-2 " />
+                                                Dashboard
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem
                                         asChild
                                         onClick={logoutAction}>
-                                        <span className="hover:text-red-600 hover:cursor-pointer">
+                                        <span className="hover:cursor-pointer hover:!text-red-600">
                                             <PiSignOutBold className="w-5 h-5 mr-2" />
                                             Logout
                                         </span>
@@ -207,7 +220,7 @@ export default function NavMenu() {
                             </Button>
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="relative w-screen mx-px top-2 bg-lightPrimary">
+                    <PopoverContent className="relative w-screen mx-px top-2 bg-lightPrimary dark:bg-navy-900">
                         <div className="flex flex-col items-center mx-auto">
                             <NavigationMenu>
                                 <NavigationMenuList className="flex flex-col items-center justify-center gap-2">
@@ -238,53 +251,6 @@ export default function NavMenu() {
                                     <ImSpinner9 className="animate-spin ease-in-out" />
                                 </Button> :
                                 !session?.data &&
-                                // <DropdownMenu onOpenChange={(status) => status ? setIconDown(true) : setIconDown(false)}>
-                                //     <DropdownMenuTrigger asChild>
-                                //         <Button className="w-full my-2 mx-2 flex items-center">
-                                //             {session.data.user.name}
-                                //             <IoIosArrowDown className={`w-4 h-4 transition-transform duration-300 ml-2 ${iconDown ? "rotate-180" : ""}`} />
-                                //         </Button>
-                                //     </DropdownMenuTrigger>
-                                //     <DropdownMenuContent className="w-screen ">
-                                //         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                //         <DropdownMenuSeparator />
-                                //         <DropdownMenuGroup>
-                                //             <DropdownMenuItem asChild>
-                                //                 <Link href={`${session.data.user.role === "USER" ? "/profile" : "/dashboard"}`}
-                                //                     aria-label="open profile"
-                                //                     aria-controls="navbar-default"
-                                //                     aria-expanded="false"
-                                //                     className="hover:cursor-pointer group">
-                                //                     <LuUserCircle2 className="w-5 h-5 mr-2 group-hover:text-blue-400" />
-                                //                     {session.data.user.role === "USER" ? "Profile" : "Dashboard"}
-                                //                 </Link>
-                                //             </DropdownMenuItem>
-                                //             <DropdownMenuItem asChild>
-                                //                 <Link
-                                //                     href={`/students/${session.data.user.id}/tables`}
-                                //                     aria-label="open wishlist"
-                                //                     aria-controls="navbar-default"
-                                //                     aria-expanded="false"
-                                //                     className="group hover:cursor-pointer">
-                                //                     <BiTable className="w-5 h-5 group-hover:animate-pumping-heart group-hover:text-indigo-600 mr-2" />
-                                //                     All Tables
-                                //                 </Link>
-                                //             </DropdownMenuItem>
-                                //         </DropdownMenuGroup>
-                                //         <DropdownMenuSeparator />
-                                //         <DropdownMenuGroup>
-                                //             <DropdownMenuItem
-                                //                 asChild
-                                //                 onClick={logoutAction}>
-                                //                 <span className="group hover:cursor-pointer w-full">
-                                //                     <PiSignOutBold className="w-5 h-5 group-hover:text-red-600 mr-2" />
-                                //                     Logout
-                                //                 </span>
-                                //             </DropdownMenuItem>
-                                //         </DropdownMenuGroup>
-                                //     </DropdownMenuContent>
-                                // </DropdownMenu>
-                                // :
                                 <Button variant={"outline"} asChild>
                                     <Link href="/login" className="flex items-center w-full">
                                         Login

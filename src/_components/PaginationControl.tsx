@@ -3,6 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon, } from "@radix-ui/react-icons"
 import Link from "next/link"
 import { Button } from "./ui/button"
 import { useSearchParams } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 
 type PaginationControlProps = {
@@ -20,7 +21,7 @@ export default function PaginationControl({ currentPage, metadata, className }: 
     const searchParams = useSearchParams()
 
     return (
-        <div className={`${className} flex items-center justify-center gap-1 mx-auto px-2.5 mt-12`}>
+        <div className={cn("flex items-center justify-center gap-1 mx-auto px-2.5 mt-12", className)}>
             <ChevronLeftIcon className="h-4 w-4 -mr-4" />
             <Button
                 asChild={hasPreviousPage}
