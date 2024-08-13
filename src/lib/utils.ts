@@ -12,3 +12,10 @@ export function createPublicId(publicId: string, id: number): string {
 export function returnPublicId(publicId: string): number {
   return parseInt(publicId.slice(11, -10))
 }
+
+
+export function convertTo24Hour(time: { hour: string, minute: string, period: string }) {
+  let hour = parseInt(time.hour) % 12;
+  if (time.period === "PM") hour += 12;
+  return { hour, minute: parseInt(time.minute) };
+};
