@@ -19,7 +19,6 @@ import { signOut, useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/_components/ui/dropdown-menu"
 import { LuUserCircle2 } from "react-icons/lu"
-import { BiTable } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 import { MdSpaceDashboard } from "react-icons/md"
 
