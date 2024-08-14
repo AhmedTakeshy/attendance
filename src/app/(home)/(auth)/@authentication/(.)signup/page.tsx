@@ -18,7 +18,7 @@ export default function Page() {
     }, [pathname])
     return (
         <Dialog open={isOpened} onOpenChange={() => { setIsOpened(prev => !prev); router.push("/") }}>
-            <DialogContent className='p-0 rounded-sm md:rounded-2xl'>
+            <DialogContent className='p-0 rounded-md md:rounded-2xl w-max'>
                 <DialogHeader className="sr-only">
                     <DialogTitle className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                         Welcome to Attendance

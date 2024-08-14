@@ -76,12 +76,12 @@ export default function SignUpForm() {
             toast.error("Error!", {
                 description: "Something went wrong. Please try again.",
             })
-            setIsPending(false)
         }
+        setIsPending(false)
     }
     return (
         <Form {...form} >
-            <div className="w-full max-sm:max-w-md mx-auto md:p-8 p-4 rounded-sm md:rounded-2xl shadow-input ">
+            <div className="w-full max-sm:max-w-md mx-auto md:p-8 p-4 rounded-md md:rounded-2xl shadow-input ">
                 <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                     Welcome to Attendance
                 </h2>
