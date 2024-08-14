@@ -60,16 +60,16 @@ export default function SignUpForm() {
 
             const res = await signUpAction(result.data)
 
-            if (res?.status === 201) {
+            if (res?.status === "Success") {
                 toast.success("Successfully!", {
-                    description: res?.message,
+                    description: res?.successMessage,
                 })
                 await login({ type: "credentials", email: result.data.email, password: result.data.password })
                 form.reset()
                 router.refresh()
             } else {
                 toast.error("Oops!", {
-                    description: res?.message,
+                    description: res?.errorMessage,
                 })
             }
         } catch (error) {

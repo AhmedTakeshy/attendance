@@ -3,41 +3,36 @@ import Image from "next/image"
 import AttendanceTables from "./attendanceTables"
 import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 import { UserWithTables } from "@/_actions/studentActions"
-import { Button } from "@/_components/ui/button"
 import { usePathname } from "next/navigation"
-import Link from "next/link"
+import ProfileOptions from "./profileOptions"
+
 
 type ProfileProps = {
   data: Metadata<{ student: UserWithTables }>
-  tablesPage: number
 }
 
-export default function Profile({ data, tablesPage }: ProfileProps) {
+export default function Profile({ data }: ProfileProps) {
   const pathname = usePathname()
 
   return (
-    <div className="bg-white dark:bg-navy-800 rounded-2.5xl dark:shadow-none shadow-2xl shadow-shadow-500 pb-8">
-      <div className="w-full h-[250px]">
+    <div className="bg-white dark:bg-navy-800 rounded-2.5xl dark:shadow-none shadow-2xl shadow-shadow-500 pb-8 mx-4">
+      <div className="w-full h-[250px] relative">
+        {!pathname.includes("students") && (
+          <ProfileOptions studentId={data.student.id} studentPublicId={data.student.publicId} />
+        )}
         <Image
           width={1247}
           height={250}
+          priority
           src="https://vojislavd.com/ta-template-demo/assets/img/profile-background.jpg"
           alt="Profile background"
           className="w-full h-full rounded-t-2.5xl" />
       </div>
       <div className="flex flex-col items-center -mt-20">
-        <Button>
-          <Link href={`${pathname}/create-table`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M13 3a1 1 0 00-1 1v2H8a1 1 0 100 2h4v2a1 1 0 102 0V8h4a1 1 0 100-2h-4V4a1 1 0 00-1-1z" clipRule="evenodd"></path>
-            </svg>
-            Create Table
-          </Link>
-        </Button>
         <Avatar
           className="w-40 h-40 rounded-full border-4 border-white bg-navy-700 dark:!border-navy-700">
-          <AvatarImage src={`${data.student.image}`} alt={`${data.student.firstName}-image`} />
-          <AvatarFallback>
+          <AvatarImage className="w-full h-full" src={`${data.student.image}`} alt={`${data.student.firstName}-image`} />
+          <AvatarFallback className="w-full h-full">
             {`${data.student.firstName[0]}${data.student.lastName[0]}`}
           </AvatarFallback>
         </Avatar>
@@ -49,9 +44,9 @@ export default function Profile({ data, tablesPage }: ProfileProps) {
             </svg>
           </span> */}
         </div>
-        <p className="text-gray-700">student</p>
+        <p className="text-gray-500">{data.student.role ? "Student" : "Student(Admin)"}</p>
       </div>
-      <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
+      <div className="px-1 sm:px-4 md:px-8 mt-2">
         {/* <div className="flex items-center space-x-4 mt-2">
           <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -66,7 +61,9 @@ export default function Profile({ data, tablesPage }: ProfileProps) {
             <span>Message</span>
           </button>
         </div> */}
-        <AttendanceTables data={data} tablesPage={tablesPage} />
+        {data.student.tables.length > 0 && (
+          <AttendanceTables data={data} />
+        )}
       </div>
     </div>
   )

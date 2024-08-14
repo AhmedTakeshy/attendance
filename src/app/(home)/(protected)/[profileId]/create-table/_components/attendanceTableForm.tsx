@@ -78,14 +78,14 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                 return
             }
             const { tableName, isPublic, userId, days } = data
-            console.log("🚀 ~ createTable ~ data:", data)
+
             const res = await createAttendanceTable({ userId, tableName, isPublic, days })
             if (res.status === "Success") {
                 toast.success("Success!", {
-                    description: "Table created successfully.",
+                    description: res.successMessage,
                 })
                 form.reset()
-                router.push(`/students/${studentId}/tables`)
+                router.push(`/${studentId}?tablesPage=1`)
             }
         } catch (error) {
             toast("Error!", {

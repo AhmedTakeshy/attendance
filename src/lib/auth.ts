@@ -42,10 +42,16 @@ export const {
         ...authConfig,
 
         callbacks: {
-            async jwt({ token, user, account, profile }) {
+            async jwt({ token, user, trigger, session }) {
                 if (user) {
                     token.id = user.id
                     token.role = user.role
+                }
+                if (trigger === "update") {
+                    if (session.user) {
+                        token.email = session.user.email,
+                            token.name = session.user.name
+                    }
                 }
                 return token
             },

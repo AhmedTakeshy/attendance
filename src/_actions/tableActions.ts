@@ -26,7 +26,7 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
                 name: subject.subjectName,
                 startTime: `${subject.startTime.hour}:${subject.startTime.minute} ${subject.startTime.period}`,
                 endTime: `${subject.endTime.hour}:${subject.endTime.minute} ${subject.endTime.period}`,
-                attendances: subject.attendance,
+                attendance: subject.attendance,
             })) : [],
         }));
 
@@ -86,4 +86,25 @@ export async function getLastAttendanceTable({ studentId }: Props): Promise<Serv
 }
 
 
-
+export async function deleteTable(tableId: number, studentId: number): Promise<ServerResponse<null>> {
+    try {
+        const res = await prisma.table.delete({
+            where: {
+                id: tableId,
+                userId: studentId
+            }
+        })
+        return {
+            statusCode: 200,
+            successMessage: "Table deleted successfully",
+            status: "Success",
+            data: null
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to delete table",
+            status: "Error",
+        }
+    }
+}

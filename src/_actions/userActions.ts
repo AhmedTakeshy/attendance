@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache";
 import bcrypt, { hash } from "bcryptjs";
 import { User } from "@prisma/client";
 import { signIn, } from "@/lib/auth";
+import { createPublicId } from "@/lib/utils";
 
 
 export async function contactFormAction(values: ContactSchema): Promise<ServerResponse<null>> {
@@ -42,11 +43,11 @@ export async function contactFormAction(values: ContactSchema): Promise<ServerRe
     }
 }
 
-export async function signUpAction(values: SignUpFormSchema) {
+export async function signUpAction(values: SignUpFormSchema): Promise<ServerResponse<null>> {
     try {
         const result = await signUpFormSchema.safeParseAsync(values)
         if (!result.success) {
-            return { error: true, message: "Something wrong with entered data.", status: 401 }
+            return { status: "Error", errorMessage: "Something wrong with entered data.", statusCode: 401 }
         }
         const { firstName, lastName, email, password } = result.data
         const existedUserEmail = await prisma.user.findUnique({
@@ -55,38 +56,50 @@ export async function signUpAction(values: SignUpFormSchema) {
             }
         })
         if (existedUserEmail) {
-            return { error: true, message: "There is a user already with this email!", status: 409 }
-        }
-        const hashedPassword = await hash(password, 10)
-        if (!existedUserEmail) {
-            const user = await prisma.user.create({
-                data: {
-                    firstName,
-                    lastName,
-                    email: email.toLowerCase(),
-                    password: hashedPassword,
-                }
-            })
-
-
             return {
-                error: false,
-                message: `User has been created successfully with this email:
-                ${email}`,
-                status: 201
+                status: "Error",
+                errorMessage: "There is a user already with this email!",
+                statusCode: 409
             }
         }
+        const hashedPassword = await hash(password, 10)
+
+
+        const user = await prisma.user.create({
+            data: {
+                firstName,
+                lastName,
+                email: email.toLowerCase(),
+                password: hashedPassword,
+            }
+        })
+
+        return {
+            status: "Success",
+            successMessage: `User has been created successfully with this email:
+                ${email}`,
+            statusCode: 201,
+            data: null
+        }
     } catch (error) {
-        return { error: true, message: "Something went wrong!", status: 401 }
+        return {
+            status: "Error",
+            errorMessage: "Something went wrong!",
+            statusCode: 401
+        }
     }
 }
 
 
-export async function updateUser(values: UserUpdateSchema) {
+export async function updateUser(values: UserUpdateSchema): Promise<ServerResponse<User>> {
     try {
         const result = await userUpdateSchema.safeParseAsync(values)
         if (!result.success) {
-            return { error: true, message: "Something wrong with entered data!", status: 401 }
+            return {
+                status: "Error",
+                errorMessage: "Something wrong with entered data!",
+                statusCode: 401
+            }
         }
         const { firstName, lastName, email, newEmail } = result.data
 
@@ -97,10 +110,14 @@ export async function updateUser(values: UserUpdateSchema) {
                 }
             })
             if (existedUserEmail) {
-                return { error: true, message: "There is a user already with this email!", status: 409 }
+                return {
+                    status: "Error",
+                    errorMessage: "There is a user already with this email!",
+                    statusCode: 409
+                }
             }
         }
-        const res = await prisma.user.update({
+        const user = await prisma.user.update({
             where: {
                 email,
             },
@@ -110,18 +127,18 @@ export async function updateUser(values: UserUpdateSchema) {
                 email: newEmail,
             }
         })
-        revalidatePath("/profile")
-        return { error: false, message: `User has been updated successfully.`, status: 200 }
+        revalidatePath(`/${createPublicId(user.publicId, user.id)}`)
+        return { status: "Success", successMessage: `User has been updated successfully.`, statusCode: 200, data: user }
     } catch (error) {
-        return { error: true, message: "Something went wrong!", status: 401 }
+        return { status: "Error", errorMessage: "Something went wrong!", statusCode: 401 }
     }
 }
 
-export async function updatePassword(values: PasswordSchema) {
+export async function updatePassword(values: PasswordSchema): Promise<ServerResponse<User>> {
     try {
         const result = await passwordSchema.safeParseAsync(values)
         if (!result.success) {
-            return { error: true, message: "Something wrong with entered data!", status: 401 }
+            return { status: "Error", errorMessage: "Something wrong with entered data!", statusCode: 401 }
         }
         const { currentPassword, newPassword, email } = result.data
         const user = await prisma.user.findUnique({
@@ -131,10 +148,10 @@ export async function updatePassword(values: PasswordSchema) {
         })
         const isMatch = await bcrypt.compare(currentPassword, user?.password!)
         if (!isMatch) {
-            return { error: true, message: "Current password is not correct!", status: 401 }
+            return { status: "Error", errorMessage: "Current password is not correct!", statusCode: 401 }
         }
         const hashedPassword = await hash(newPassword, 10)
-        await prisma.user.update({
+        const res = await prisma.user.update({
             where: {
                 email
             },
@@ -142,10 +159,10 @@ export async function updatePassword(values: PasswordSchema) {
                 password: hashedPassword
             }
         })
-        revalidatePath("/profile")
-        return { error: false, message: "Password has been updated successfully.", status: 200 }
+        revalidatePath(`/${createPublicId(res.publicId, res.id)}`)
+        return { status: "Success", successMessage: "Password has been updated successfully.", statusCode: 200, data: res }
     } catch (error) {
-        return { error: true, message: "Something went wrong!", status: 401 }
+        return { status: "Error", errorMessage: "Something went wrong!", statusCode: 401 }
     }
 }
 
@@ -186,5 +203,27 @@ export async function login(provider: Provider) {
         return { error: false, message: "User has been logged in successfully.", status: 200 }
     } catch (error) {
         return { error: true, message: "Something went wrong!", status: 401 }
+    }
+}
+
+export async function deleteUser(StudentId: number): Promise<ServerResponse<null>> {
+    try {
+        await prisma.user.delete({
+            where: {
+                id: StudentId
+            }
+        })
+        return {
+            status: "Success",
+            successMessage: "User has been deleted successfully.",
+            statusCode: 200,
+            data: null
+        }
+    } catch (error) {
+        return {
+            status: "Error",
+            errorMessage: "Something went wrong!",
+            statusCode: 500,
+        }
     }
 }
