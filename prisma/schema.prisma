@@ -110,7 +110,7 @@ model Table {
   publicId     String             @unique @default(nanoid())
   isPublic     Boolean            @default(false)
   userId       Int
-  user         User               @relation(fields: [userId], references: [id])
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   days         Day[]
   libraryId    Int?
   library      Library?           @relation(fields: [libraryId], references: [id])
