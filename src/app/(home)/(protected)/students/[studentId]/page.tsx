@@ -43,7 +43,7 @@ export default async function page({ params, searchParams }: Props) {
 
   return (
     response.status === "Success" ? (
-      <Profile data={response.data} tablesPage={parseInt(searchParams.page ?? "1")} />
+      <Profile data={response.data} />
     ) : (
       <p className="text-lg font-semibold text-red-600">Student not found</p>
     )

@@ -9,7 +9,6 @@ import { Input } from "@/_components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/_components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/popover";
 import { Button } from "@/_components/ui/button";
-import { MdOutlineCancel } from "react-icons/md";
 
 type SubjectFormProps = {
     index: number;

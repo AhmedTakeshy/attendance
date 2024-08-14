@@ -30,8 +30,8 @@ export default function NavMenu() {
 
     function logoutAction() {
         signOut({ callbackUrl: "/login" })
-        toast.success("Logout", {
-            description: "Goodbye, see you soon",
+        toast.info("Logout", {
+            description: "Goodbye, see you soon!",
         })
     }
 

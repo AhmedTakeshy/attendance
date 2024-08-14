@@ -220,6 +220,7 @@ export async function deleteUser(StudentId: number): Promise<ServerResponse<null
             data: null
         }
     } catch (error) {
+        console.log("🚀 ~ deleteUser ~ error:", error)
         return {
             status: "Error",
             errorMessage: "Something went wrong!",

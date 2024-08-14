@@ -18,7 +18,7 @@ export default function Profile({ data }: ProfileProps) {
     <div className="bg-white dark:bg-navy-800 rounded-2.5xl dark:shadow-none shadow-2xl shadow-shadow-500 pb-8 mx-4">
       <div className="w-full h-[250px] relative">
         {!pathname.includes("students") && (
-          <ProfileOptions studentId={data.student.id} studentPublicId={data.student.publicId} />
+          <ProfileOptions />
         )}
         <Image
           width={1247}

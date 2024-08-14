@@ -2,14 +2,13 @@ import { FlipWords } from "@/app/(home)/_components/flipWords";
 import { Button } from "@/_components/ui/button";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { createPublicId, returnPublicId } from "@/lib/utils";
-import { getUserByEmail } from "@/_actions/userActions";
+import { returnPublicId } from "@/lib/utils";
 import { getLastAttendanceTable } from "@/_actions/tableActions";
 
 export default async function Home() {
   const words = ["easy", "responsive", "smart", "accessible"];
   const session = await auth();
-  const response = session?.user && await getLastAttendanceTable(returnPublicId(session.user.id));
+  const response = session?.user && await getLastAttendanceTable({ studentId: returnPublicId(session.user.id) });
   return (
     response?.status === "Success" ? (
       <div>
