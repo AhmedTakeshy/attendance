@@ -106,7 +106,7 @@ model PasswordResetToken {
 
 model Table {
   id           Int                @id @default(autoincrement())
-  name         String             @unique
+  name         String
   publicId     String             @unique @default(nanoid())
   isPublic     Boolean            @default(false)
   userId       Int
@@ -146,7 +146,8 @@ enum DayName {
 model Subject {
   id         Int      @id @default(autoincrement())
   publicId   String   @unique @default(nanoid())
-  name       String   @unique
+  name       String
+  teacher    String?
   startTime  String
   endTime    String
   dayId      Int

@@ -124,6 +124,7 @@ CREATE TABLE "Subject" (
     "id" SERIAL NOT NULL,
     "publicId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "teacher" TEXT,
     "startTime" TEXT NOT NULL,
     "endTime" TEXT NOT NULL,
     "dayId" INTEGER NOT NULL,
@@ -219,9 +220,6 @@ CREATE UNIQUE INDEX "PasswordResetToken_token_key" ON "PasswordResetToken"("toke
 CREATE UNIQUE INDEX "PasswordResetToken_email_token_key" ON "PasswordResetToken"("email", "token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Table_name_key" ON "Table"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Table_publicId_key" ON "Table"("publicId");
 
 -- CreateIndex
@@ -235,9 +233,6 @@ CREATE INDEX "Day_tableId_idx" ON "Day"("tableId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subject_publicId_key" ON "Subject"("publicId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Subject_name_key" ON "Subject"("name");
 
 -- CreateIndex
 CREATE INDEX "Subject_dayId_idx" ON "Subject"("dayId");
