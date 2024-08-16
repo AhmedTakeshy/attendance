@@ -20,7 +20,6 @@ import { Button } from '@/_components/ui/button'
 import SubjectField from './subjectField'
 import { createAttendanceTable } from '@/_actions/tableActions'
 import { Switch } from "@/_components/ui/switch"
-import { Label } from '@/_components/ui/label'
 import { useRouter } from 'next/navigation'
 
 
@@ -31,7 +30,40 @@ type AttendanceTableFormProps = {
 export default function AttendanceTableForm({ studentId }: AttendanceTableFormProps) {
     const [isPending, setIsPending] = useState<boolean>(false)
     const router = useRouter()
-    const days = ["Days", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const days = [
+        {
+            text: "Days",
+            value: "Days"
+        },
+        {
+            text: "Mon",
+            value: "Monday"
+        },
+        {
+            text: "Tue",
+            value: "Tuesday"
+        },
+        {
+            text: "Wed",
+            value: "Wednesday"
+        },
+        {
+            text: "Thu",
+            value: "Thursday"
+        },
+        {
+            text: "Fri",
+            value: "Friday"
+        },
+        {
+            text: "Sat",
+            value: "Saturday"
+        },
+        {
+            text: "Sun",
+            value: "Sunday"
+        },
+    ]
     let subjects = {
         subjectName: "",
         teacher: "",
@@ -48,6 +80,7 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
         attendance: 0,
         absence: 0,
     }
+
 
     const form = useForm<CreateAttendanceTableSchema>({
         resolver: zodResolver(createAttendanceTableSchema),
@@ -66,6 +99,7 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
             }
         }
     });
+
 
     async function createTable(data: CreateAttendanceTableSchema) {
         setIsPending(true)
@@ -122,14 +156,14 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                         </FormItem>
                     )}>
                 </FormField>
-                <div className="flex flex-col max-w-7xl w-full p-4 divide-y-2 divide-slate-200 dark:divide-slate-700">
+                <div className="flex flex-col max-w-7xl w-full p-4 sm:divide-y-2 divide-slate-200 dark:divide-slate-700">
                     {days.map((day, i) => (
-                        <div key={day} className='flex items-center'>
-                            <p className={`py-2 px-4 basis-[10%] text-center ${day === "Days" ? "bg-diagonal bg-repeat" : "dark:text-slate-300 text-slate-500"}`}>
-                                {day}
+                        <div key={day.text} className='flex sm:flex-row flex-col items-center'>
+                            <p className={`py-2 mt-4 sm:mt-0 px-4 md:basis-[10%] sm:basis-[20%] text-center ${day.text === "Days" ? "bg-diagonal bg-repeat" : "dark:text-slate-300 text-slate-500"}`}>
+                                {day.text}
                             </p>
-                            {day === "Days" ? (
-                                <div className='basis-[90%] border-l-2 border-slate-200 dark:border-slate-700 flex items-baseline justify-between'>
+                            {day.text === "Days" ? (
+                                <div className='md:basis-[90%] sm:basis-[80%] sm:border-l-2 border-slate-200 dark:border-slate-700 flex items-baseline justify-between w-full'>
                                     <p className='text-lg tracking-widest py-2 px-4 text-center'>Subjects</p>
                                     <FormField
                                         control={form.control}
@@ -149,8 +183,8 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                                     </FormField>
                                 </div>
                             ) : (
-                                <div className="max-sm:max-w-sm basis-[90%] sm:mx-auto mx-2 gap-4 p-4 items-center rounded-2.5xl sm:rounded-none shadow-input sm:shadow-none flex !border-l-2 border-slate-200 dark:border-slate-700 flex-col">
-                                    <SubjectField day={day} />
+                                <div className="max-sm:max-w-sm md:basis-[90%] sm:basis-[80%] sm:mx-auto mx-2 gap-4 p-4 items-center  sm:rounded-none rounded-2xl shadow-input sm:shadow-none grid sm:!border-l-2  border-slate-200 dark:border-slate-700 sm:grid-cols-1 grid-cols-2 sm:overflow-x-scroll">
+                                    <SubjectField day={day.value} />
                                 </div>
                             )}
                         </div>

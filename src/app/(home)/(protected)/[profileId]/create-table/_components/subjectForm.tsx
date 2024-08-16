@@ -23,7 +23,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
     const periods = ["AM", "PM"];
 
     return (
-        <div className=' flex items-baseline justify-start w-full gap-6'>
+        <div className=' flex flex-col sm:flex-row sm:items-baseline items-center justify-start w-full gap-6'>
             <FormField control={control} name={`${name}[${index}].subjectName`}
                 render={({ field }) => (
                     <FormItem>
@@ -31,7 +31,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                             <Input
                                 type="text"
                                 placeholder="Subject name..."
-                                className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
                                 {...field}
                             />
                         </FormControl>
@@ -211,12 +211,12 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
             </Popover>
             <FormField control={control} name={`${name}[${index}].teacher`}
                 render={({ field }) => (
-                    <FormItem className='basis-52'>
+                    <FormItem className='sm:basis-52'>
                         <FormControl>
                             <Input
                                 type="text"
                                 placeholder="Teacher name (optional)"
-                                className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
                                 {...field}
                             />
                         </FormControl>
@@ -249,7 +249,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                     </FormField>
                 </PopoverContent>
             </Popover>
-            <Button variant={"destructive"} onClick={() => onRemove(index)} className="ml-auto ">
+            <Button variant={"destructive"} onClick={() => onRemove(index)} className="sm:ml-auto ">
                 Delete Subject
             </Button>
         </div>

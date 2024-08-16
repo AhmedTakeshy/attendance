@@ -9,12 +9,19 @@ type SubjectFieldProps = {
 export default function SubjectField({ day }: SubjectFieldProps) {
     const { control } = useFormContext();
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, remove, append } = useFieldArray({
         control,
         name: `days.${day}.subjects`,
     });
 
+
+
+    function removeSubject(index: number) {
+        remove(index);
+    }
+
     function appendSubject() {
+        console.log("appending")
         append({
             subjectName: "",
             teacher: "",
@@ -31,20 +38,11 @@ export default function SubjectField({ day }: SubjectFieldProps) {
             attendance: 0,
             absence: 0,
         });
-    }
-
-    function removeSubject(index: number) {
-        remove(index);
+        console.log("appended")
     }
 
     return (
         <>
-            <Button
-                type="button"
-                onClick={appendSubject}
-                className="bg-brand-300 hover:bg-brand-300 dark:bg-navy-600 dark:hover:bg-navy-700 text-white self-end">
-                Add Subject
-            </Button>
             {fields.map((field, index) => (
                 <SubjectForm
                     key={field.id}
@@ -53,6 +51,12 @@ export default function SubjectField({ day }: SubjectFieldProps) {
                     onRemove={removeSubject}
                 />
             ))}
+            <Button
+                type="button"
+                onClick={appendSubject}
+                className="col-span-2 sm:col-span-1 w-full sm:w-fit bg-brand-300 hover:bg-brand-300 dark:bg-navy-600 dark:hover:bg-navy-700 text-white place-self-end">
+                Add Subject
+            </Button>
         </>
     );
 }
