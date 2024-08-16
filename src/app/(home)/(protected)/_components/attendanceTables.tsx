@@ -35,7 +35,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
     async function handleDeleteTable(tableId: number) {
         setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], delete: true } }))
         try {
-            const res = await deleteTable(tableId, data.student.id)
+            const res = await deleteTable({ tableId, studentId: data.student.id })
             if (res.status === "Success") {
                 toast.success("Table has been deleted successfully.")
             } else {
@@ -50,7 +50,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
     async function handleCopyTable(tableId: number) {
         setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], use: true } }))
         try {
-            const res = await copyTable(tableId, returnPublicId(session?.user.id as string))
+            const res = await copyTable({ tableId, studentId: returnPublicId(session?.user.id as string) })
             if (res.status === "Success") {
                 toast.success("Table has been copied successfully.")
                 router.push(`/${session?.user?.id}`)

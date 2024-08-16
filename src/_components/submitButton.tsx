@@ -16,7 +16,7 @@ export default function SubmitButton({ children, pending, ...props }: Props) {
     <Button
       disabled={pending}
       {...props}
-      className={cn(" dark:bg-navy-600 dark:hover:bg-navy-700 dark:active:bg-navy-700 bg-brand-300 hover:bg-brand-300 active:bg-brand-400 disabled:cursor-wait text-white", props.className)}
+      className={cn(" dark:bg-navy-600 dark:hover:bg-navy-700 dark:active:bg-navy-700 bg-brand-300 hover:bg-brand-400 active:bg-brand-400 disabled:cursor-wait text-white", props.className)}
     >
       <ImSpinner9
         size={25}
