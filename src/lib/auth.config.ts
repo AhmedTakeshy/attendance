@@ -4,6 +4,10 @@ import bcrypt from "bcryptjs"
 import type { NextAuthConfig } from "next-auth";
 import { User } from "next-auth"
 import { createPublicId } from "./utils";
+import Google from "next-auth/providers/google"
+import Facebook from "next-auth/providers/facebook"
+import Twitter from "next-auth/providers/twitter"
+import Instagram from "next-auth/providers/instagram"
 
 export default {
     providers: [
@@ -32,5 +36,9 @@ export default {
                 } as User
             }
         }),
+        Google,
+        Facebook,
+        Twitter,
+        Instagram,
     ],
 } satisfies NextAuthConfig

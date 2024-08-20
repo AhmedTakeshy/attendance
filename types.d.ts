@@ -18,6 +18,6 @@ type CredentialsProvider = {
 };
 
 type OAuthProvider = {
-    type: "google" | "facebook" | "instagram";
+    type: "google" | "facebook" | "instagram" | "twitter";
 };
 type Provider = CredentialsProvider | OAuthProvider;

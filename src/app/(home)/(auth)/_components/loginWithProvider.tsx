@@ -2,7 +2,7 @@ import { login } from "@/_actions/userActions"
 import BottomGradient from "@/_components/bottomGradient"
 import SubmitButton from "@/_components/submitButton"
 import { useState } from "react"
-import { RiFacebookCircleLine, RiInstagramLine } from "react-icons/ri"
+import { RiTwitterXLine, RiInstagramLine } from "react-icons/ri"
 import { FcGoogle } from "react-icons/fc"
 
 export default function LoginWithProvider() {
@@ -34,10 +34,10 @@ export default function LoginWithProvider() {
             <SubmitButton
                 disabled={isPending}
                 pending={isPending}
-                onClick={() => loginWithProvider({ type: "facebook" })}
+                onClick={() => loginWithProvider({ type: "twitter" })}
                 className="hover:cursor-pointer relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             >
-                <RiFacebookCircleLine className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+                <RiTwitterXLine className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
                 <span className="text-neutral-700 dark:text-neutral-300 text-sm">
                     Facebook
                 </span>
