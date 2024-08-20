@@ -1,6 +1,5 @@
 import { getTableById } from "@/_actions/tableActions"
 import SimpleAttendanceTable from "@/app/(home)/_components/simpleAttendanceTable"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { createPublicId, returnPublicId } from "@/lib/utils"
 
