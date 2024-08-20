@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import {
     Form,
     FormControl,
@@ -15,8 +15,6 @@ import { toast } from "sonner"
 import SubmitButton from "@/_components/submitButton"
 import { createAttendanceTableSchema, CreateAttendanceTableSchema } from '@/lib/formSchemas'
 import { returnPublicId } from '@/lib/utils'
-import { SubjectForm } from './subjectForm'
-import { Button } from '@/_components/ui/button'
 import SubjectField from './subjectField'
 import { createAttendanceTable } from '@/_actions/tableActions'
 import { Switch } from "@/_components/ui/switch"

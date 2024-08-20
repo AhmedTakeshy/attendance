@@ -21,7 +21,6 @@ export default function SubjectField({ day }: SubjectFieldProps) {
     }
 
     function appendSubject() {
-        console.log("appending")
         append({
             subjectName: "",
             teacher: "",
@@ -38,7 +37,6 @@ export default function SubjectField({ day }: SubjectFieldProps) {
             attendance: 0,
             absence: 0,
         });
-        console.log("appended")
     }
 
     return (
