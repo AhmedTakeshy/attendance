@@ -4,16 +4,15 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { returnPublicId } from "@/lib/utils";
 import { getLastAttendanceTable } from "@/_actions/tableActions";
+import SimpleAttendanceTable from "./_components/simpleAttendanceTable";
 
 export default async function Home() {
   const words = ["easy", "responsive", "smart", "accessible"];
   const session = await auth();
-  const response = session?.user && await getLastAttendanceTable({ studentId: returnPublicId(session.user.id) });
+  const response = await getLastAttendanceTable(returnPublicId(session?.user.id as string));
   return (
     response?.status === "Success" ? (
-      <div>
-        table
-      </div>
+      <SimpleAttendanceTable table={response.data.table} />
     ) : (
       <>
         <div className="flex justify-center items-center px-4 mx-auto">

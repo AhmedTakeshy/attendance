@@ -6,7 +6,7 @@ import { Day, DayName, Subject, Table } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 type Props = {
-    // tableId: number
+    tableId: number
     studentId: number
 }
 
@@ -72,8 +72,8 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
     }
 }
 
-type TableObj = (Table & { days: (Day & { subjects: Subject[] })[] }) | null;
-export async function getLastAttendanceTable({ studentId }: Props): Promise<ServerResponse<{ table: TableObj }>> {
+export type TableObj = (Table & { days: (Day & { subjects: Subject[] })[] });
+export async function getLastAttendanceTable(studentId: number): Promise<ServerResponse<{ table: TableObj }>> {
     try {
         const table = await prisma.table.findFirst({
             where: {
@@ -114,7 +114,44 @@ export async function getLastAttendanceTable({ studentId }: Props): Promise<Serv
     }
 }
 
-export async function copyTable(tableId: number, studentId: number): Promise<ServerResponse<null>> {
+export async function getTableById({ tableId, studentId }: Props): Promise<ServerResponse<{ table: TableObj }>> {
+    try {
+        const table = await prisma.table.findUnique({
+            where: {
+                id: tableId,
+                userId: studentId
+            },
+            include: {
+                days: {
+                    include: {
+                        subjects: true
+                    }
+                }
+            }
+        })
+        if (!table) {
+            return {
+                statusCode: 404,
+                errorMessage: "Table not found",
+                status: "Error",
+            }
+        }
+        return {
+            statusCode: 200,
+            successMessage: "Table fetched successfully",
+            status: "Success",
+            data: { table }
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to fetch table",
+            status: "Error",
+        }
+    }
+}
+
+export async function copyTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
     try {
         const table = await prisma.table.findUnique({
             where: {
@@ -185,7 +222,7 @@ export async function copyTable(tableId: number, studentId: number): Promise<Ser
     }
 }
 
-export async function deleteTable(tableId: number, studentId: number): Promise<ServerResponse<null>> {
+export async function deleteTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
     try {
         const res = await prisma.table.delete({
             where: {
@@ -204,6 +241,122 @@ export async function deleteTable(tableId: number, studentId: number): Promise<S
         return {
             statusCode: 500,
             errorMessage: "Failed to delete table",
+            status: "Error",
+        }
+    }
+}
+
+export async function updateTable(data: CreateAttendanceTableSchema, { tableId, studentId }: Props): Promise<ServerResponse<null>> {
+    try {
+        const result = await createAttendanceTableSchema.safeParseAsync(data)
+        if (!result.success) {
+            return {
+                statusCode: 400,
+                errorMessage: "Invalid data",
+                status: "Error",
+            }
+        }
+        const { tableName, days, isPublic, } = data
+
+        const daysArray = Object.entries(days).map(([key, value]) => ({
+            name: key.toUpperCase() as DayName,
+            subjects: value.subjects ? value.subjects.map(subject => ({
+                name: subject.subjectName,
+                teacher: subject.teacher,
+                startTime: `${subject.startTime.hour}:${subject.startTime.minute} ${subject.startTime.period}`,
+                endTime: `${subject.endTime.hour}:${subject.endTime.minute} ${subject.endTime.period}`,
+                attendance: subject.attendance,
+            })) : [],
+        })
+        );
+
+        await prisma.table.update({
+            where: {
+                id: tableId,
+                userId: studentId
+            },
+            data: {
+                name: tableName,
+                days: {
+                    deleteMany: {},
+                    create: daysArray.map(day => ({
+                        name: day.name,
+                        subjects: {
+                            create: day.subjects
+                        }
+                    }))
+                },
+                isPublic
+            }
+        })
+        return {
+            statusCode: 200,
+            successMessage: "Table updated successfully",
+            status: "Success",
+            data: null
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to update table",
+            status: "Error",
+        }
+    }
+}
+
+export async function addAbsence({ tableId, studentId, dayName, subjectId }: { tableId: number, studentId: number, dayName: DayName, subjectId: number }): Promise<ServerResponse<null>> {
+    try {
+        const table = await prisma.table.findUnique({
+            where: {
+                id: tableId,
+                userId: studentId
+            },
+            include: {
+                days: {
+                    where: {
+                        name: dayName
+                    },
+                    include: {
+                        subjects: true
+                    }
+                }
+            }
+        })
+        if (!table) {
+            return {
+                statusCode: 404,
+                errorMessage: "Table not found",
+                status: "Error",
+            }
+        }
+        const day = table.days[0]
+        const subject = day.subjects.find(subject => subject.id === subjectId)
+        if (!subject) {
+            return {
+                statusCode: 404,
+                errorMessage: "Subject not found",
+                status: "Error",
+            }
+        }
+        await prisma.subject.update({
+            where: {
+                id: subject.id
+            },
+            data: {
+                absence: subject.absence + 1
+            }
+        })
+        revalidatePath(`/${studentId}/${tableId}`)
+        return {
+            statusCode: 200,
+            successMessage: "Absence added successfully",
+            status: "Success",
+            data: null
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to add absence",
             status: "Error",
         }
     }
