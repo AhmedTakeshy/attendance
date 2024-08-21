@@ -64,7 +64,7 @@ export default function SignUpForm() {
                 toast.success("Successfully!", {
                     description: res?.successMessage,
                 })
-                await login({ type: "credentials", email: result.data.email, password: result.data.password })
+                await login({ email: result.data.email, password: result.data.password })
                 form.reset()
                 router.refresh()
             } else {
