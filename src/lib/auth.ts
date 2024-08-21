@@ -2,6 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import authConfig from "./auth.config";
+import { createPublicId } from "./utils";
 declare module "next-auth" {
     /**
      * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
@@ -11,6 +12,7 @@ declare module "next-auth" {
             /** The user's role. */
             id: string
             role: string
+            publicId: string
             /**
              * By default, TypeScript merges new interface properties and overwrites existing ones.
              * In this case, the default session user properties will be overwritten,
@@ -23,6 +25,9 @@ declare module "next-auth" {
     interface User {
         id?: string;
         role: string;
+        publicId?: string;
+        firstName?: string;
+        lastName?: string;
     }
 }
 
@@ -42,11 +47,28 @@ export const {
         ...authConfig,
 
         callbacks: {
-            async jwt({ token, user, trigger, session }) {
-                if (user) {
-                    token.id = user.id
-                    token.role = user.role
+            async signIn({ user, account, profile }) {
+                console.log(" ~ signIn ~ { user, account, profile }:", { user, account, profile })
+                if (user && profile) {
+                    user.firstName = user?.name?.split(" ")[0] ?? ""
+                    user.lastName = user?.name?.split(" ")[1] ?? ""
+                    return true
                 }
+                return false
+            },
+            async jwt({ token, user, trigger, session }) {
+                const userDB = await prisma.user.findUnique({
+                    where: {
+                        email: token.email as string
+                    },
+                    select: {
+                        id: true,
+                        publicId: true,
+                        role: true,
+                    }
+                })
+                token.id = createPublicId(userDB?.publicId as string, userDB?.id as number) ?? user.id
+                token.role = userDB?.role ?? user.role
                 if (trigger === "update") {
                     if (session.user) {
                         token.email = session.user.email,

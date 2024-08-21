@@ -9,14 +9,16 @@ import SimpleAttendanceTable from "./_components/simpleAttendanceTable";
 export default async function Home() {
   const words = ["easy", "responsive", "smart", "accessible"];
   const session = await auth();
-  const response = session?.user ? await getLastAttendanceTable(returnPublicId(session?.user.id as string)) : null;
+  console.log("🚀 ~ Home ~ session:", session?.user)
+  // const response = session?.user ? await getLastAttendanceTable(returnPublicId(session?.user.id as string)) : null;
   return (
     session?.user ? (
-      response?.status === "Success" ? (
-        <SimpleAttendanceTable table={response.data.table} />
-      ) : (
-        <CreateTableSection path="create" userId={`${session.user.id}`} words={words} />
-      )
+      <div>table</div>
+      // response?.status === "Success" ? (
+      //   <SimpleAttendanceTable table={response.data.table} />
+      // ) : (
+      //   <CreateTableSection path="create" userId={`${session.user.id}`} words={words} />
+      // )
     ) : (
       <CreateTableSection path="login" words={words} />
     )
@@ -39,7 +41,7 @@ function CreateTableSection({ path, words, userId }: CreateTableSectionProps) {
         </div>
       </div>
       <Button asChild>
-        <Link href={`/${path === "login" ? "login" : userId}/create-table`} className="flex items-center bg-blue-500 hover:bg-blue-700 transition-colors duration-300">
+        <Link href={`/${path === "login" ? "login" : `${userId}/create-table`}`} className="flex items-center bg-blue-500 hover:bg-blue-700 transition-colors duration-300">
           Create attendance table
         </Link>
       </Button>

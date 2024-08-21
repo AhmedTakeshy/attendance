@@ -189,20 +189,23 @@ export async function getUserByEmail(email: string): Promise<ServerResponse<User
 }
 
 
-export async function login(provider: Provider) {
+export async function login({ email, password }: { email: string, password: string }): Promise<ServerResponse<null>> {
     try {
-        if (provider.type === "credentials") {
-            await signIn(provider.type, {
-                redirect: false,
-                email: provider.email.toLowerCase(),
-                password: provider.password,
-            })
-        } else {
-            await signIn(provider.type)
+
+        await signIn("credentials", {
+            redirect: false,
+            email: email.toLowerCase(),
+            password: password,
+        })
+        return {
+            status: "Success",
+            successMessage: "User has been logged in successfully.",
+            statusCode: 200,
+            data: null
         }
-        return { error: false, message: "User has been logged in successfully.", status: 200 }
     } catch (error) {
-        return { error: true, message: "Something went wrong!", status: 401 }
+        console.log("🚀 ~ login ~ error:", error)
+        return { status: "Error", errorMessage: "Something went wrong!", statusCode: 401 }
     }
 }
 

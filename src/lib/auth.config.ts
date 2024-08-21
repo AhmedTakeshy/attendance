@@ -26,7 +26,7 @@ export default {
                 })
                 if (!existingUser) return null;
 
-                const isPasswordValid = await bcrypt.compare(password.toString(), existingUser.password)
+                const isPasswordValid = await bcrypt.compare(password.toString(), existingUser?.password as string)
                 if (!isPasswordValid) return null;
                 return {
                     id: createPublicId(existingUser.publicId, existingUser.id),
@@ -36,9 +36,27 @@ export default {
                 } as User
             }
         }),
-        Google,
-        Facebook,
-        Twitter,
-        Instagram,
+        Google({
+            allowDangerousEmailAccountLinking: true,
+        }),
+        Facebook({
+            allowDangerousEmailAccountLinking: true,
+        }),
+        Twitter({
+            allowDangerousEmailAccountLinking: true,
+        }),
+        Instagram({
+            profile(profile) {
+                console.log("🚀 ~ profile ~ profile:", profile)
+                return {
+                    id: profile.id,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture,
+                    role: "USER",
+                }
+            },
+            allowDangerousEmailAccountLinking: true,
+        }),
     ],
 } satisfies NextAuthConfig

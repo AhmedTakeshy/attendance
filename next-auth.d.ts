@@ -1,8 +1,9 @@
+
 declare module "@auth/core/adapters" {
     interface AdapterUser extends User {
         id: string
+        publicId: string
         email: string
-        emailVerified: Date | null
         role: string
     }
 }

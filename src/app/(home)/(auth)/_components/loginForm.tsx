@@ -25,9 +25,6 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 
 
-
-
-
 export default function LoginForm() {
 
     const [isPending, setIsPending] = useState<boolean>(false)
@@ -57,8 +54,8 @@ export default function LoginForm() {
                 return
             }
             const { email, password } = result.data
-            const res = await login({ type: "credentials", email: email.toLowerCase(), password })
-            if (res?.status === 200) {
+            const res = await login({ email: email.toLowerCase(), password })
+            if (res?.status === "Success") {
                 toast.success("Successfully", {
                     description: `Welcome back, ${email}`,
                 })
