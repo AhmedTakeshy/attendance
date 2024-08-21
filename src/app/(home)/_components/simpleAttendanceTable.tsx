@@ -32,7 +32,8 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
     const currentDay = useMemo(() => table.days.find(day => day.name === selectedDay), [selectedDay, table.days])
     const today = useMemo(() => table.days[new Date().getDay() - 1].name, [table.days])
     const isMoreDetails = useMemo(() => pathname.includes(`${createPublicId(table.publicId as string, table.id as number)}`), [pathname, table.publicId, table.id])
-
+    const notForStudent = useMemo(() => !pathname.includes("students"), [pathname])
+    console.log("🚀 ~ SimpleAttendanceTable ~ notForStudent:", notForStudent)
     const handleDayChange = (dayName: DayName) => setSelectedDay(dayName)
 
 
@@ -72,7 +73,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
 
     return (
         <div className="flex flex-col w-full max-sm:max-w-md sm:px-8 px-4 mx-auto max-w-5xl">
-            {!pathname.includes("students") && (
+            {notForStudent && (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button size={"icon"} variant={"outline"} className='ml-auto'>
@@ -157,14 +158,17 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                         currentDay.subjects.map((subject) => (
                                             <div
                                                 key={subject.id}
-                                                className={`flex flex-col items-center gap-2 ${currentDay.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
-                                                <SubmitButton
-                                                    onClick={() => handleAbsence(currentDay.name, subject.id)}
-                                                    pending={isPending[subject.id] || false}
-                                                    className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
-                                                    <TbExposurePlus1 size={20} />
-                                                    Absence
-                                                </SubmitButton>
+                                                className={`flex flex-col items-center ${notForStudent ? "" : "pt-4"} gap-2 ${currentDay.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
+                                                {notForStudent && (
+                                                    <SubmitButton
+                                                        disabled={!notForStudent}
+                                                        onClick={() => handleAbsence(currentDay.name, subject.id)}
+                                                        pending={isPending[subject.id] || false}
+                                                        className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
+                                                        <TbExposurePlus1 size={20} />
+                                                        Absence
+                                                    </SubmitButton>
+                                                )}
                                                 <p>{subject.name}</p>
                                                 <p>{subject.teacher}</p>
                                                 <p>{subject.startTime}</p>
@@ -180,7 +184,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                 </TableCell>
                             </TableRow>
                         ) : (
-
+                            // little details
                             table.days.map((day) => (
                                 <TableRow
                                     key={day.id}
@@ -203,14 +207,17 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                             day.subjects.map((subject) => (
                                                 <div
                                                     key={subject.id}
-                                                    className={`flex flex-col items-center gap-2 ${day.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
-                                                    <SubmitButton
-                                                        onClick={() => handleAbsence(day.name, subject.id)}
-                                                        pending={isPending[subject.id] || false}
-                                                        className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
-                                                        <TbExposurePlus1 size={20} />
-                                                        Absence
-                                                    </SubmitButton>
+                                                    className={`flex flex-col items-center ${notForStudent ? "" : "pt-4"} gap-2 ${day.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
+                                                    {notForStudent && (
+                                                        <SubmitButton
+                                                            disabled={!notForStudent}
+                                                            onClick={() => handleAbsence(day.name, subject.id)}
+                                                            pending={isPending[subject.id] || false}
+                                                            className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
+                                                            <TbExposurePlus1 size={20} />
+                                                            Absence
+                                                        </SubmitButton>
+                                                    )}
                                                     <p>{subject.name}</p>
                                                     <p>{subject.teacher}</p>
                                                     <p>{subject.startTime}</p>
