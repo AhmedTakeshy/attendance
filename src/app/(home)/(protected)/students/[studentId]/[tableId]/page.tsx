@@ -16,14 +16,14 @@ export async function generateStaticParams() {
 
 type Props = {
     params: {
-        profileId: string,
+        studentId: string,
         tableId: string,
     },
 }
 
 export default async function page({ params }: Props) {
-    const { tableId, profileId } = params
-    const response = await getTableById({ tableId: returnPublicId(tableId), studentId: returnPublicId(profileId) })
+    const { tableId, studentId } = params
+    const response = await getTableById({ tableId: returnPublicId(tableId), studentId: returnPublicId(studentId) })
 
     return (
         response.status === "Success" ? (

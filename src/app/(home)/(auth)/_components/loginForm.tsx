@@ -22,6 +22,7 @@ import LoginWithProvider from "./loginWithProvider"
 import BottomGradient from "@/_components/bottomGradient"
 import { login } from "@/_actions/userActions"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
+import { useSession } from "next-auth/react"
 
 
 
@@ -31,7 +32,7 @@ export default function LoginForm() {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter()
     const searchParams = useSearchParams()
-
+    const session = useSession()
 
     const form = useForm<LoginFormSchema>({
         resolver: zodResolver(loginFormSchema),
@@ -59,8 +60,8 @@ export default function LoginForm() {
                 toast.success("Successfully", {
                     description: `Welcome back, ${email}`,
                 })
+                session.update({ user: { ...session.data?.user } })
                 router.push(searchParams.get("callbackUrl") || DEFAULT_LOGIN_REDIRECT)
-
             } else {
                 toast.error("Oops!", {
                     description: "Please check your email and password and try again.",

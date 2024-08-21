@@ -48,8 +48,7 @@ export const {
 
         callbacks: {
             async signIn({ user, account, profile }) {
-                console.log(" ~ signIn ~ { user, account, profile }:", { user, account, profile })
-                if (user && profile) {
+                if (user) {
                     user.firstName = user?.name?.split(" ")[0] ?? ""
                     user.lastName = user?.name?.split(" ")[1] ?? ""
                     return true
