@@ -26,6 +26,7 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
             },
             select: {
                 id: true,
+                name: true,
                 publicId: true,
                 firstName: true,
                 lastName: true,
@@ -94,6 +95,7 @@ export async function getStudentTables({ page = 1, studentId, isPublic, search }
                 publicId: true,
                 firstName: true,
                 lastName: true,
+                name: true,
                 email: true,
                 role: true,
                 image: true,
