@@ -73,7 +73,7 @@ export const passwordSchema = z.object({
     message: "Passwords do not match",
 })
 
-const timeSchema = z.object({
+export const timeSchema = z.object({
     hour: z.enum(["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]),
     minute: z.enum(["00", "15", "30", "45"]),
     period: z.enum(["AM", "PM"]),
@@ -81,21 +81,22 @@ const timeSchema = z.object({
 
 // Define the schema for a subject
 const subjectSchema = z.object({
-    subjectName: z.string().min(1, "Subject name is required"),
-    teacher: z.string().optional().or(z.literal("").transform(e => undefined)),
-    startTime: timeSchema,
-    endTime: timeSchema,
+    name: z.string().min(1, "Subject name is required"),
+    teacher: z.string().optional().or(z.literal("").transform(e => undefined)).nullable(),
+    startTime: z.string(),
+    endTime: z.string(),
     attendance: z.coerce.number().min(0).nonnegative({ message: "Attendance must be a non-negative number" }),
     absence: z.coerce.number().min(0).nonnegative({ message: "Absence must be a non-negative number" }),
-}).refine(({ startTime, endTime }) => {
-    const start = convertTo24Hour(startTime);
-    const end = convertTo24Hour(endTime);
+})
+// .refine(({ startTime, endTime }) => {
+//     const start = convertTo24Hour(startTime);
+//     const end = convertTo24Hour(endTime);
 
-    return (start.hour < end.hour) || (start.hour === end.hour && start.minute < end.minute);
-}, {
-    message: "Start time must be before end time",
-    path: ["startTime"]
-});;
+//     return (start.hour < end.hour) || (start.hour === end.hour && start.minute < end.minute);
+// }, {
+//     message: "Start time must be before end time",
+//     path: ["startTime"]
+// });
 
 const daysSchema = z.object({
     Monday: z.object({ subjects: z.array(subjectSchema).optional() }),

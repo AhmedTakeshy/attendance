@@ -22,18 +22,10 @@ export default function SubjectField({ day }: SubjectFieldProps) {
 
     function appendSubject() {
         append({
-            subjectName: "",
+            name: "",
             teacher: "",
-            startTime: {
-                hour: "08",
-                minute: "00",
-                period: "AM"
-            },
-            endTime: {
-                hour: "09",
-                minute: "00",
-                period: "AM"
-            },
+            startTime: "08:00 AM",
+            endTime: "09:00 AM",
             attendance: 0,
             absence: 0,
         });

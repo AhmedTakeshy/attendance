@@ -25,10 +25,10 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
         const daysArray = Object.entries(days).map(([key, value]) => ({
             name: key.toUpperCase() as DayName,
             subjects: value.subjects ? value.subjects.map(subject => ({
-                name: subject.subjectName,
+                name: subject.name,
                 teacher: subject.teacher,
-                startTime: `${subject.startTime.hour}:${subject.startTime.minute} ${subject.startTime.period}`,
-                endTime: `${subject.endTime.hour}:${subject.endTime.minute} ${subject.endTime.period}`,
+                startTime: subject.startTime,
+                endTime: subject.endTime,
                 attendance: subject.attendance,
             })) : [],
         }));
@@ -261,10 +261,10 @@ export async function updateTable(data: CreateAttendanceTableSchema, { tableId, 
         const daysArray = Object.entries(days).map(([key, value]) => ({
             name: key.toUpperCase() as DayName,
             subjects: value.subjects ? value.subjects.map(subject => ({
-                name: subject.subjectName,
+                name: subject.name,
                 teacher: subject.teacher,
-                startTime: `${subject.startTime.hour}:${subject.startTime.minute} ${subject.startTime.period}`,
-                endTime: `${subject.endTime.hour}:${subject.endTime.minute} ${subject.endTime.period}`,
+                startTime: subject.startTime,
+                endTime: subject.endTime,
                 attendance: subject.attendance,
             })) : [],
         })
@@ -278,7 +278,11 @@ export async function updateTable(data: CreateAttendanceTableSchema, { tableId, 
             data: {
                 name: tableName,
                 days: {
-                    deleteMany: {},
+                    deleteMany: {
+                        name: {
+                            notIn: daysArray.map(day => day.name)
+                        }
+                    },
                     create: daysArray.map(day => ({
                         name: day.name,
                         subjects: {

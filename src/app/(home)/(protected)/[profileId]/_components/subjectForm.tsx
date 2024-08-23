@@ -24,7 +24,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
 
     return (
         <div className=' flex flex-col sm:flex-row sm:items-baseline items-center justify-start w-full gap-6'>
-            <FormField control={control} name={`${name}[${index}].subjectName`}
+            <FormField control={control} name={`${name}[${index}].name`}
                 render={({ field }) => (
                     <FormItem>
                         <FormControl>

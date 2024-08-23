@@ -16,18 +16,22 @@ import SubmitButton from "@/_components/submitButton"
 import { createAttendanceTableSchema, CreateAttendanceTableSchema } from '@/lib/formSchemas'
 import { returnPublicId } from '@/lib/utils'
 import SubjectField from './subjectField'
-import { createAttendanceTable } from '@/_actions/tableActions'
+import { createAttendanceTable, TableObj, updateTable } from '@/_actions/tableActions'
 import { Switch } from "@/_components/ui/switch"
 import { useRouter } from 'next/navigation'
 
 
 type AttendanceTableFormProps = {
     studentId: string
+    table?: TableObj
 }
 
-export default function AttendanceTableForm({ studentId }: AttendanceTableFormProps) {
+export default function AttendanceTableForm({ studentId, table }: Readonly<AttendanceTableFormProps>) {
     const [isPending, setIsPending] = useState<boolean>(false)
     const router = useRouter()
+
+
+
     const days = [
         {
             text: "Days",
@@ -62,39 +66,31 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
             value: "Sunday"
         },
     ]
-    let subjects = {
-        subjectName: "",
-        teacher: "",
-        startTime: {
-            hour: "08" as "08" | "09" | "01" | "02" | "03" | "04" | "05" | "06" | "07" | "10" | "11" | "12",
-            minute: "00" as "00" | "15" | "30" | "45",
-            period: "AM" as "AM" | "PM"
-        },
-        endTime: {
-            hour: "09" as "08" | "09" | "01" | "02" | "03" | "04" | "05" | "06" | "07" | "10" | "11" | "12",
-            minute: "00" as "00" | "15" | "30" | "45",
-            period: "AM" as "AM" | "PM"
-        },
-        attendance: 0,
-        absence: 0,
-    }
+
+
+
+    const formatTableDays = (tableDays?: TableObj["days"]) => {
+        const formattedDays = {
+            Monday: { subjects: tableDays?.find(day => day.name === "MONDAY")?.subjects ?? [] },
+            Tuesday: { subjects: tableDays?.find(day => day.name === "TUESDAY")?.subjects ?? [] },
+            Wednesday: { subjects: tableDays?.find(day => day.name === "WEDNESDAY")?.subjects ?? [] },
+            Thursday: { subjects: tableDays?.find(day => day.name === "THURSDAY")?.subjects ?? [] },
+            Friday: { subjects: tableDays?.find(day => day.name === "FRIDAY")?.subjects ?? [] },
+            Saturday: { subjects: tableDays?.find(day => day.name === "SATURDAY")?.subjects ?? [] },
+            Sunday: { subjects: tableDays?.find(day => day.name === "SUNDAY")?.subjects ?? [] },
+        };
+
+        return formattedDays;
+    };
 
 
     const form = useForm<CreateAttendanceTableSchema>({
         resolver: zodResolver(createAttendanceTableSchema),
         defaultValues: {
-            tableName: "",
-            isPublic: false,
+            tableName: table?.name ?? "",
+            isPublic: table?.isPublic ?? false,
             userId: returnPublicId(studentId),
-            days: {
-                Monday: { subjects: Array.from({ length: 2 }, () => subjects) },
-                Tuesday: { subjects: Array.from({ length: 2 }, () => subjects) },
-                Wednesday: { subjects: Array.from({ length: 2 }, () => subjects) },
-                Thursday: { subjects: Array.from({ length: 2 }, () => subjects) },
-                Friday: { subjects: Array.from({ length: 2 }, () => subjects) },
-                Saturday: { subjects: [] },
-                Sunday: { subjects: [] },
-            }
+            days: formatTableDays(table?.days)
         }
     });
 
@@ -110,8 +106,10 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                 return
             }
             const { tableName, isPublic, userId, days } = data
-
-            const res = await createAttendanceTable({ userId, tableName, isPublic, days })
+            let res;
+            table
+                ? res = await updateTable({ userId, tableName, isPublic, days }, { tableId: table.id, studentId: returnPublicId(studentId) })
+                : res = await createAttendanceTable({ userId, tableName, isPublic, days });
             if (res.status === "Success") {
                 toast.success("Success!", {
                     description: res.successMessage,
@@ -134,7 +132,7 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                 className="my-8 container flex flex-col gap-4"
             >
                 <h2 className="text-2xl font-semibold mb-12 text-center">
-                    Create a new table
+                    {table ? "Update Table" : "Create Table"}
                 </h2>
                 <FormField
                     control={form.control}
@@ -188,7 +186,9 @@ export default function AttendanceTableForm({ studentId }: AttendanceTableFormPr
                         </div>
                     ))}
                 </div>
-                <SubmitButton pending={isPending}>Create Table</SubmitButton>
+                <SubmitButton pending={isPending}>
+                    {table ? "Update Table" : "Create Table"}
+                </SubmitButton>
             </form>
         </Form >
     )
