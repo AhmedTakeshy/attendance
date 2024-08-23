@@ -34,8 +34,9 @@ export default {
                     email: existingUser.email,
                     role: existingUser.role ?? "USER",
                 } as User
-            }
-        }),
+            },
+        },
+        ),
         Google({
             allowDangerousEmailAccountLinking: true,
         }),
@@ -46,16 +47,6 @@ export default {
             allowDangerousEmailAccountLinking: true,
         }),
         Instagram({
-            profile(profile) {
-                console.log("🚀 ~ profile ~ profile:", profile)
-                return {
-                    id: profile.id,
-                    name: profile.name,
-                    email: profile.email,
-                    image: profile.picture,
-                    role: "USER",
-                }
-            },
             allowDangerousEmailAccountLinking: true,
         }),
     ],

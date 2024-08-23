@@ -33,7 +33,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
     const today = useMemo(() => table.days[new Date().getDay() - 1].name, [table.days])
     const isMoreDetails = useMemo(() => pathname.includes(`${createPublicId(table.publicId as string, table.id as number)}`), [pathname, table.publicId, table.id])
     const notForStudent = useMemo(() => !pathname.includes("students"), [pathname])
-    console.log("🚀 ~ SimpleAttendanceTable ~ notForStudent:", notForStudent)
+
     const handleDayChange = (dayName: DayName) => setSelectedDay(dayName)
 
 
@@ -91,7 +91,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                 </DropdownMenuItem>
                             )}
                             <DropdownMenuItem asChild>
-                                <Link href={`${pathname}/edit`} className='flex gap-2 items-center'>
+                                <Link href={`/${session?.user.id}/${createPublicId(table.publicId as string, table.id as number)}/edit`} className='flex gap-2 items-center'>
                                     <BiSolidEditAlt />
                                     Edit
                                 </Link>
