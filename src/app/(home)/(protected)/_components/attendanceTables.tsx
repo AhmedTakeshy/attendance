@@ -89,35 +89,37 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                                     checked={table.isPublic}
                                 />
                             </TableCell>
-                            <TableCell align='right' className="space-x-2 flex sm:flex-row flex-col max-sm:space-y-2 justify-end sm:items-center items-end">
-                                <Button asChild className="bg-brand-300 hover:bg-brand-400 dark:bg-navy-500 dark:hover:bg-navy-600 text-inherit">
-                                    <Link href={`${pathname}/${tableId}`} >View</Link>
-                                </Button>
-                                {!isStudent && (
-                                    <SubmitButton
-                                        pending={isDeletePending}
-                                        onClick={() => handleDeleteTable(table.id)}
-                                        className="!bg-rose-500 hover:!bg-rose-600 text-inherit">
-                                        Delete
-                                    </SubmitButton>
-                                )}
-                                <Button onClick={() => copyTableId(tableId)} className="bg-green-500 hover:bg-green-700 text-inherit">
-                                    Copy Id
-                                </Button>
-                                {isStudent && (
-                                    <SubmitButton
-                                        pending={isUsePending}
-                                        onClick={() => handleCopyTable(table.id)}
-                                        className="!bg-primary !text-primary-foreground shadow hover:!bg-primary/70">
-                                        Use Table
-                                    </SubmitButton>
-                                )}
+                            <TableCell align='right' className="w-80">
+                                <div className="space-x-2 flex sm:flex-row flex-col max-sm:space-y-2 justify-end sm:items-center items-end">
+                                    <Button asChild className="bg-brand-300 hover:bg-brand-400 dark:bg-navy-500 dark:hover:bg-navy-600 text-inherit">
+                                        <Link href={`${pathname}/${tableId}`} >View</Link>
+                                    </Button>
+                                    {!isStudent && (
+                                        <SubmitButton
+                                            pending={isDeletePending}
+                                            onClick={() => handleDeleteTable(table.id)}
+                                            className="!bg-rose-500 hover:!bg-rose-600 text-inherit">
+                                            Delete
+                                        </SubmitButton>
+                                    )}
+                                    <Button onClick={() => copyTableId(tableId)} className="bg-green-500 hover:bg-green-700 text-inherit">
+                                        Copy Id
+                                    </Button>
+                                    {isStudent && (
+                                        <SubmitButton
+                                            pending={isUsePending}
+                                            onClick={() => handleCopyTable(table.id)}
+                                            className="!bg-primary !text-primary-foreground shadow hover:!bg-primary/70">
+                                            Use Table
+                                        </SubmitButton>
+                                    )}
+                                </div>
                             </TableCell>
                         </TableRow>
                     )
                 })}
                 <TableRow className='hover:bg-transparent'>
-                    <TableCell colSpan={3} className="text-center">
+                    <TableCell colSpan={4} className="text-center">
                         <PaginationControl
                             currentPage={tablesPage}
                             metadata={data.metadata}
