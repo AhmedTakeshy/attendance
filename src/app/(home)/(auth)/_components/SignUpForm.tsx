@@ -17,17 +17,19 @@ import { SignUpFormSchema, signUpFormSchema } from "@/lib/formSchemas"
 
 import SubmitButton from "@/_components/submitButton"
 import { login, signUpAction } from "@/_actions/userActions"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import BottomGradient from "@/_components/bottomGradient"
 import LoginWithProvider from "./loginWithProvider"
 import { useSession } from "next-auth/react"
 import { sendVerificationToken } from "@/_actions/verificationActions"
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 
 export default function SignUpForm() {
 
     const [isPending, setIsPending] = useState<boolean>(false)
     const session = useSession()
+    const searchParams = useSearchParams()
 
     const [showPassword, setShowPassword] = useState<{
         password: boolean,
@@ -61,11 +63,11 @@ export default function SignUpForm() {
                 return
             }
 
-            const res = await signUpAction(result.data)
+            const signUpRes = await signUpAction(result.data)
 
-            if (res?.status === "Success") {
+            if (signUpRes?.status === "Success") {
                 toast.success("Successfully!", {
-                    description: res?.successMessage,
+                    description: signUpRes?.successMessage,
                 })
                 form.reset()
                 const response = await sendVerificationToken(result.data.email, result.data.firstName)
@@ -78,12 +80,21 @@ export default function SignUpForm() {
                         description: response?.errorMessage,
                     })
                 }
-                await login({ email: result.data.email, password: result.data.password })
-                session.update({ user: { ...session.data?.user } })
-                router.refresh()
+                const loginRes = await login({ email: result.data.email, password: result.data.password })
+                if (loginRes?.status === "Success") {
+                    toast.success("Successfully", {
+                        description: loginRes.successMessage,
+                    })
+                    session.update({ user: { ...session.data?.user } })
+                    router.push(searchParams.get("callbackUrl") || DEFAULT_LOGIN_REDIRECT)
+                } else {
+                    toast.error("Oops!", {
+                        description: loginRes?.errorMessage,
+                    })
+                }
             } else {
                 toast.error("Oops!", {
-                    description: res?.errorMessage,
+                    description: signUpRes?.errorMessage,
                 })
             }
         } catch (error) {
