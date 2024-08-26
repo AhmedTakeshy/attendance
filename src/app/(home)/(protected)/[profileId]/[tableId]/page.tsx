@@ -3,23 +3,18 @@ import SimpleAttendanceTable from "@/app/(home)/_components/simpleAttendanceTabl
 import { prisma } from "@/lib/prisma"
 import { createPublicId, returnPublicId } from "@/lib/utils"
 
-export async function generateStaticParams() {
-    const usersWithTables = await prisma.user.findMany({ // there is a problem with this function
+export async function generateStaticParams({ params: { profileId } }: { params: { profileId: string } }) {
+    const profileTables = await prisma.table.findMany({
+        where: {
+            userId: returnPublicId(profileId)
+        },
         select: {
             id: true,
             publicId: true,
-            tables: {
-                select: {
-                    id: true,
-                    publicId: true,
-                    userId: true,
-                },
-            },
-        },
+        }
     })
-    return usersWithTables.map((userWithTable, i) => ({
-        profileId: createPublicId(userWithTable.publicId, userWithTable.id),
-        tableId: createPublicId(userWithTable.tables[i].publicId, userWithTable.tables[i].id),
+    return profileTables.map((table) => ({
+        tableId: createPublicId(table.publicId, table.id),
     }))
 }
 

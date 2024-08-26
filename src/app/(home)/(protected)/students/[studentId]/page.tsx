@@ -5,17 +5,6 @@ import { auth } from "@/lib/auth"
 import { notFound, } from "next/navigation"
 import Profile from "../../_components/profile"
 
-export async function generateStaticParams() {
-  const students = await prisma.user.findMany({
-    select: {
-      id: true,
-      publicId: true,
-    }
-  })
-  return students.map((student) => ({
-    studentId: createPublicId(student.publicId, student.id),
-  }))
-}
 
 type Props = {
   params: {
@@ -26,7 +15,7 @@ type Props = {
   }
 }
 
-export default async function page({ params, searchParams }: Props) {
+export default async function StudentLayout({ params, searchParams }: Props) {
   const { studentId } = params
   const session = await auth()
 

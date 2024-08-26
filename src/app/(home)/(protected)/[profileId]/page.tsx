@@ -1,21 +1,9 @@
 import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import { createPublicId, returnPublicId } from '@/lib/utils'
+import { returnPublicId } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import Profile from '../_components/profile'
 import { getStudentTables } from '@/_actions/studentActions'
 
-export async function generateStaticParams() {
-    const students = await prisma.user.findMany({
-        select: {
-            id: true,
-            publicId: true,
-        }
-    })
-    return students.map((student) => ({
-        profileId: createPublicId(student.publicId, student.id),
-    }))
-}
 
 type Props = {
     params: {
