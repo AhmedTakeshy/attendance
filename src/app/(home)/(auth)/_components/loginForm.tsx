@@ -54,11 +54,10 @@ export default function LoginForm() {
                 })
                 return
             }
-            const { email, password } = result.data
-            const res = await login({ email: email.toLowerCase(), password })
+            const res = await login(result.data)
             if (res?.status === "Success") {
                 toast.success("Successfully", {
-                    description: `Welcome back, ${email}`,
+                    description: res.successMessage,
                 })
                 session.update({ user: { ...session.data?.user } })
                 router.push(searchParams.get("callbackUrl") || DEFAULT_LOGIN_REDIRECT)

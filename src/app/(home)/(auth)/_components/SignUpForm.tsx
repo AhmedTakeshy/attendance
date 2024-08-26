@@ -20,11 +20,14 @@ import { login, signUpAction } from "@/_actions/userActions"
 import { useRouter } from "next/navigation"
 import BottomGradient from "@/_components/bottomGradient"
 import LoginWithProvider from "./loginWithProvider"
+import { useSession } from "next-auth/react"
+import { sendVerificationToken } from "@/_actions/verificationActions"
 
 
 export default function SignUpForm() {
 
     const [isPending, setIsPending] = useState<boolean>(false)
+    const session = useSession()
 
     const [showPassword, setShowPassword] = useState<{
         password: boolean,
@@ -64,8 +67,19 @@ export default function SignUpForm() {
                 toast.success("Successfully!", {
                     description: res?.successMessage,
                 })
-                await login({ email: result.data.email, password: result.data.password })
                 form.reset()
+                const response = await sendVerificationToken(result.data.email, result.data.firstName)
+                if (response?.status === "Success") {
+                    toast.success("Success!", {
+                        description: response.successMessage,
+                    })
+                } else {
+                    toast.error("Oops!", {
+                        description: response?.errorMessage,
+                    })
+                }
+                await login({ email: result.data.email, password: result.data.password })
+                session.update({ user: { ...session.data?.user } })
                 router.refresh()
             } else {
                 toast.error("Oops!", {

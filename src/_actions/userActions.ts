@@ -11,7 +11,7 @@ import {
 } from "@/lib/formSchemas";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import bcrypt, { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 import { User } from "@prisma/client";
 import { signIn, } from "@/lib/auth";
 import { createPublicId } from "@/lib/utils";
@@ -146,7 +146,7 @@ export async function updatePassword(values: PasswordSchema): Promise<ServerResp
                 email
             }
         })
-        const isMatch = await bcrypt.compare(currentPassword, user?.password!)
+        const isMatch = await compare(currentPassword, user?.password!)
         if (!isMatch) {
             return { status: "Error", errorMessage: "Current password is not correct!", statusCode: 401 }
         }
@@ -199,12 +199,11 @@ export async function login({ email, password }: { email: string, password: stri
         })
         return {
             status: "Success",
-            successMessage: "User has been logged in successfully.",
+            successMessage: `Welcome back, ${email}`,
             statusCode: 200,
             data: null
         }
     } catch (error) {
-        console.log("🚀 ~ login ~ error:", error)
         return { status: "Error", errorMessage: "Something went wrong!", statusCode: 401 }
     }
 }
