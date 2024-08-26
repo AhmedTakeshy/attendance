@@ -1,7 +1,8 @@
 import React from 'react'
+import EmailTemplate from '../../_components/emailTemplate'
 
 export default function page() {
     return (
-        <div>contact page</div>
+        <EmailTemplate firstName={"Ahmed"} token={"https://attendancetracking.vercel.app"} />
     )
 }

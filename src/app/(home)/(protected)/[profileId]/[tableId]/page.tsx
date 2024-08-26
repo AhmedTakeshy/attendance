@@ -4,13 +4,22 @@ import { prisma } from "@/lib/prisma"
 import { createPublicId, returnPublicId } from "@/lib/utils"
 
 export async function generateStaticParams() {
-    const usersTables = await prisma.user.findMany({
-        include: {
-            tables: true,
+    const usersWithTables = await prisma.user.findMany({ // there is a problem with this function
+        select: {
+            id: true,
+            publicId: true,
+            tables: {
+                select: {
+                    id: true,
+                    publicId: true,
+                    userId: true,
+                },
+            },
         },
     })
-    return usersTables.map((userTable) => ({
-        tableId: createPublicId(userTable.publicId, userTable.id),
+    return usersWithTables.map((userWithTable, i) => ({
+        profileId: createPublicId(userWithTable.publicId, userWithTable.id),
+        tableId: createPublicId(userWithTable.tables[i].publicId, userWithTable.tables[i].id),
     }))
 }
 

@@ -27,6 +27,8 @@ import { MdSpaceDashboard } from "react-icons/md"
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
     const session = useSession()
+    console.log("🚀 ~ NavMenu ~ session:", session)
+    const fullName = session.data ? (session.data.user.name ?? `${session?.data.user.firstName} ${session?.data.user.lastName}`) : undefined
 
     function logoutAction() {
         signOut({ callbackUrl: "/login" })
@@ -74,14 +76,14 @@ export default function NavMenu() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="hover:cursor-pointer">
-                                    <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
+                                    <AvatarImage src={session.data.user.image || ""} alt={`${fullName}-image`} />
                                     <AvatarFallback>
-                                        {`${session.data.user.name?.split(" ")[0][0]}${session.data.user.name?.split(" ")[1][0]}`}
+                                        {fullName?.split(" ").map((name) => name.charAt(0)).join("")}
                                     </AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56 rounded-2.5xl dark:bg-navy-800">
-                                <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
+                                <DropdownMenuLabel>👋 Hey, {fullName}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild>
@@ -148,14 +150,14 @@ export default function NavMenu() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="hover:cursor-pointer">
-                                    <AvatarImage src={session.data.user.image || ""} alt={`${session.data.user.name}-image`} />
+                                    <AvatarImage src={session.data.user.image || ""} alt={`${fullName}-image`} />
                                     <AvatarFallback>
-                                        {`${session.data.user.name?.split(" ")[0][0]}${session.data.user.name?.split(" ")[1][0]}`}
+                                        {fullName?.split(" ").map((name) => name.charAt(0)).join("")}
                                     </AvatarFallback>
                                 </Avatar>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56 rounded-2.5xl dark:bg-navy-800">
-                                <DropdownMenuLabel>👋 Hey, {session.data.user.name}</DropdownMenuLabel>
+                                <DropdownMenuLabel>👋 Hey, {fullName}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild>
