@@ -8,6 +8,7 @@ import ProfileOptions from "./profileOptions"
 import { sendVerificationToken } from "@/_actions/verificationActions"
 import { toast } from "sonner"
 import { FaCircleCheck } from "react-icons/fa6"
+import SubmitButton from "@/_components/submitButton"
 
 
 type ProfileProps = {
@@ -72,11 +73,13 @@ export default function Profile({ data }: ProfileProps) {
       </div>
       <div className="px-1 sm:px-4 md:px-8 mt-2">
         <div className="flex items-center space-x-4 mt-2 justify-end">
-          {data.student.emailVerified?.getDate() === null && (
-            <button className="flex items-center bg-brand-600 hover:bg-brand-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+          {!data.student.emailVerified?.getDate() && (
+            <SubmitButton
+              onClick={handleVerification}
+              className="flex items-center !bg-brand-600 hover:!bg-brand-700 text-gray-100 text-sm transition duration-100">
               <FaCircleCheck size={15} />
-              <span>Verify Email</span>
-            </button>)}
+              <span className="ml-2">Verify Email</span>
+            </SubmitButton>)}
           {/* <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd"></path>
