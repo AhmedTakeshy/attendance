@@ -1,4 +1,4 @@
-import { verifyEmail } from "@/_actions/verificationActions"
+import { verifyEmail } from "@/_actions/tokenActions"
 import { Card, CardHeader, CardTitle, CardContent } from "@/_components/ui/card"
 import { auth } from "@/lib/auth"
 import { FaCircleCheck, FaCircleExclamation } from "react-icons/fa6";

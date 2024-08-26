@@ -73,13 +73,27 @@ export const passwordSchema = z.object({
     message: "Passwords do not match",
 })
 
+export const newPasswordSchema = z.object({
+    newPassword: z.string().min(8, { message: "Password must be at least 8 characters." }),
+    confirmPassword: z.string().min(8, { message: "Password must be at least 8 characters." }),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+})
+
+export const resetPasswordSchema = z.object({
+    email: z.string().email({
+        message: "Please enter a valid email address",
+    }),
+});
+
 export const timeSchema = z.object({
     hour: z.enum(["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]),
     minute: z.enum(["00", "15", "30", "45"]),
     period: z.enum(["AM", "PM"]),
 });
 
-// Define the schema for a subject
+
 const subjectSchema = z.object({
     name: z.string().min(1, "Subject name is required"),
     teacher: z.string().optional().or(z.literal("").transform(e => undefined)).nullable(),
@@ -122,5 +136,7 @@ export type LoginFormSchema = z.infer<typeof loginFormSchema>
 export type SignUpFormSchema = z.infer<typeof signUpFormSchema>
 export type UserUpdateSchema = z.infer<typeof userUpdateSchema>
 export type PasswordSchema = z.infer<typeof passwordSchema>
+export type NewPasswordSchema = z.infer<typeof newPasswordSchema>
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>
 
 export type CreateAttendanceTableSchema = z.infer<typeof createAttendanceTableSchema>
