@@ -30,7 +30,14 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
     const [isPending, setIsPending] = useState<boolean>(false)
     const router = useRouter()
 
-
+    let sub = {
+        name: "",
+        teacher: "",
+        startTime: "08:00 AM",
+        endTime: "09:00 AM",
+        attendance: 0,
+        absence: 0,
+    }
 
     const days = [
         {
@@ -71,11 +78,11 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
 
     const formatTableDays = (tableDays?: TableObj["days"]) => {
         const formattedDays = {
-            Monday: { subjects: tableDays?.find(day => day.name === "MONDAY")?.subjects ?? [] },
-            Tuesday: { subjects: tableDays?.find(day => day.name === "TUESDAY")?.subjects ?? [] },
-            Wednesday: { subjects: tableDays?.find(day => day.name === "WEDNESDAY")?.subjects ?? [] },
-            Thursday: { subjects: tableDays?.find(day => day.name === "THURSDAY")?.subjects ?? [] },
-            Friday: { subjects: tableDays?.find(day => day.name === "FRIDAY")?.subjects ?? [] },
+            Monday: { subjects: tableDays?.find(day => day.name === "MONDAY")?.subjects ?? [sub] },
+            Tuesday: { subjects: tableDays?.find(day => day.name === "TUESDAY")?.subjects ?? [sub] },
+            Wednesday: { subjects: tableDays?.find(day => day.name === "WEDNESDAY")?.subjects ?? [sub] },
+            Thursday: { subjects: tableDays?.find(day => day.name === "THURSDAY")?.subjects ?? [sub] },
+            Friday: { subjects: tableDays?.find(day => day.name === "FRIDAY")?.subjects ?? [sub] },
             Saturday: { subjects: tableDays?.find(day => day.name === "SATURDAY")?.subjects ?? [] },
             Sunday: { subjects: tableDays?.find(day => day.name === "SUNDAY")?.subjects ?? [] },
         };

@@ -30,7 +30,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
     const [selectedDay, setSelectedDay] = useState<DayName | undefined>(table.days[new Date().getDay() - 1]?.name)
 
     const currentDay = useMemo(() => table.days.find(day => day.name === selectedDay), [selectedDay, table.days])
-    const today = useMemo(() => table.days[new Date().getDay() - 1].name, [table.days])
+    const today = useMemo(() => table.days[new Date().getDay() - 1]?.name, [table.days])
     const isMoreDetails = useMemo(() => pathname.includes(`${createPublicId(table.publicId as string, table.id as number)}`), [pathname, table.publicId, table.id])
     const notForStudent = useMemo(() => !pathname.includes("students"), [pathname])
 
