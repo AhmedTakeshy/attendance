@@ -30,7 +30,9 @@ export default {
                 if (!isPasswordValid) return null;
                 return {
                     id: createPublicId(existingUser.publicId, existingUser.id),
-                    name: existingUser.firstName + " " + existingUser.lastName,
+                    firstName: existingUser.firstName,
+                    lastName: existingUser.lastName,
+                    name: `${existingUser.firstName} ${existingUser.lastName}`,
                     email: existingUser.email,
                     role: existingUser.role ?? "USER",
                 } as User

@@ -12,7 +12,6 @@ declare module "next-auth" {
             /** The user's role. */
             id: string
             role: string
-            publicId: string
             /**
              * By default, TypeScript merges new interface properties and overwrites existing ones.
              * In this case, the default session user properties will be overwritten,
@@ -25,7 +24,6 @@ declare module "next-auth" {
     interface User {
         id?: string;
         role: string;
-        publicId?: string;
         firstName?: string;
         lastName?: string;
     }
