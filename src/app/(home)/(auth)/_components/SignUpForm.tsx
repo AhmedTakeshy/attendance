@@ -21,7 +21,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import BottomGradient from "@/_components/bottomGradient"
 import LoginWithProvider from "./loginWithProvider"
 import { useSession } from "next-auth/react"
-import { sendVerificationToken } from "@/_actions/verificationActions"
+import { sendVerificationToken } from "@/_actions/tokenActions"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 
@@ -101,8 +101,9 @@ export default function SignUpForm() {
             toast.error("Error!", {
                 description: "Something went wrong. Please try again.",
             })
+        } finally {
+            setIsPending(false)
         }
-        setIsPending(false)
     }
     return (
         <Form {...form} >

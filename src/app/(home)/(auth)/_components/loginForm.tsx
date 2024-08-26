@@ -70,8 +70,9 @@ export default function LoginForm() {
             toast.error("Error!", {
                 description: "Something went wrong. Please try again.",
             })
+        } finally {
+            setIsPending(false)
         }
-        setIsPending(false)
     }
 
     return (
@@ -128,6 +129,9 @@ export default function LoginForm() {
                         Login &rarr;
                         <BottomGradient />
                     </SubmitButton>
+                    <Link href="/reset-password" className="text-blue-500 text-sm inline-block hover:text-blue-700 mt-3 text-right w-full">
+                        Forgot password
+                    </Link>
                     <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-px w-full" />
                     <LoginWithProvider />
                 </form>
