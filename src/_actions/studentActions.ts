@@ -1,6 +1,6 @@
 "use server"
 import { prisma } from "@/lib/prisma";
-import { Table, User } from "@prisma/client";
+import { Day, Subject, Table, User } from "@prisma/client";
 
 type Props = {
     search?: string
@@ -8,8 +8,10 @@ type Props = {
     studentId: number
     isPublic?: boolean
 }
-
-export type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: Table[] }
+type TableWithDaysAndSubjects = Table & {
+    days: (Day & { subjects: number })[];
+};
+export type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: TableWithDaysAndSubjects[] }
 export type UserWithTableCount = Omit<User, "password" | "createdAt" | "updatedAt"> & { tableCount: number }
 
 export async function getStudents({ search, page = 1, studentId }: Props): Promise<ServerResponse<Metadata<{ students: UserWithTableCount[] }>>> {
@@ -106,7 +108,18 @@ export async function getStudentTables({ page = 1, studentId, isPublic, search }
                         isPublic,
                         OR: [
                             { name: { contains: search, mode: "insensitive" } },
-                        ]
+                        ],
+                    },
+                    include: {
+                        days: {
+                            include: {
+                                _count: {
+                                    select: {
+                                        subjects: true
+                                    }
+                                },
+                            }
+                        }
                     },
                     skip: (page - 1) * 9,
                     take: 9,
@@ -139,7 +152,13 @@ export async function getStudentTables({ page = 1, studentId, isPublic, search }
             data: {
                 student: {
                     ...student,
-                    tables: student?.tables || [],
+                    tables: student.tables.map((table) => ({
+                        ...table,
+                        days: table.days.map((day) => ({
+                            ...day,
+                            subjects: day._count.subjects
+                        }))
+                    })),
                 },
                 metadata: {
                     hasNextPage: totalTables > page * 9,

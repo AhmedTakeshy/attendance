@@ -3,6 +3,7 @@ import { copyTable, deleteTable } from '@/_actions/tableActions'
 import PaginationControl from '@/_components/PaginationControl'
 import SubmitButton from '@/_components/submitButton'
 import { Button } from '@/_components/ui/button'
+import { Switch } from '@/_components/ui/switch'
 import { Table as TableRoot, TableHeader, TableRow, TableHead, TableBody, TableCell, } from '@/_components/ui/table'
 import { createPublicId, returnPublicId } from '@/lib/utils'
 import { Table } from '@prisma/client'
@@ -67,20 +68,27 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
         <TableRoot className="w-full mt-12">
             <TableHeader>
                 <TableRow>
-                    <TableHead className="hidden sm:table-cell">#</TableHead>
-                    <TableHead>Name</TableHead>
+                    <TableHead>Table name</TableHead>
+                    <TableHead className="hidden sm:table-cell">Subjects no.</TableHead>
+                    <TableHead className="hidden md:table-cell">Public</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.student.tables.map((table: Table) => {
+                {data.student.tables.map((table) => {
                     const tableId = createPublicId(table.publicId, table.id)
                     const isDeletePending = isPending[table.id]?.delete || false
                     const isUsePending = isPending[table.id]?.use || false
+                    const subjectsCount = table.days.reduce((acc, day) => acc + day.subjects, 0)
                     return (
                         <TableRow key={tableId} className="dark:hover:bg-white/20">
-                            <TableCell className='hidden md:table-cell'>{tableId}</TableCell>
                             <TableCell>{table.name}</TableCell>
+                            <TableCell className='hidden sm:table-cell'>{subjectsCount}</TableCell>
+                            <TableCell className='hidden md:table-cell'>
+                                <Switch
+                                    checked={table.isPublic}
+                                />
+                            </TableCell>
                             <TableCell align='right' className="space-x-2 flex sm:flex-row flex-col max-sm:space-y-2 justify-end sm:items-center items-end">
                                 <Button asChild className="bg-brand-300 hover:bg-brand-400 dark:bg-navy-500 dark:hover:bg-navy-600 text-inherit">
                                     <Link href={`${pathname}/${tableId}`} >View</Link>
