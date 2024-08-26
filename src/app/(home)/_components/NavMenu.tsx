@@ -27,7 +27,6 @@ import { MdSpaceDashboard } from "react-icons/md"
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
     const session = useSession()
-    console.log("🚀 ~ NavMenu ~ session:", session)
     const fullName = session.data ? (session.data.user.name ?? `${session?.data.user.firstName} ${session?.data.user.lastName}`) : undefined
 
     function logoutAction() {
