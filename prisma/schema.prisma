@@ -81,7 +81,7 @@ model VerificationToken {
 
 model TwoFactorToken {
   id      Int      @id @default(autoincrement())
-  email   String
+  email   String   @unique
   token   String   @unique
   expires DateTime
 
@@ -98,7 +98,7 @@ model TwoFactorConfirmation {
 
 model PasswordResetToken {
   id      Int      @id @default(autoincrement())
-  email   String
+  email   String   @unique
   token   String   @unique
   expires DateTime
 

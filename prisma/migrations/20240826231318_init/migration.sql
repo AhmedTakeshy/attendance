@@ -209,6 +209,9 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 CREATE UNIQUE INDEX "VerificationToken_email_token_key" ON "VerificationToken"("email", "token");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TwoFactorToken_email_key" ON "TwoFactorToken"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "TwoFactorToken_token_key" ON "TwoFactorToken"("token");
 
 -- CreateIndex
@@ -216,6 +219,9 @@ CREATE UNIQUE INDEX "TwoFactorToken_email_token_key" ON "TwoFactorToken"("email"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TwoFactorConfirmation_userId_key" ON "TwoFactorConfirmation"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PasswordResetToken_email_key" ON "PasswordResetToken"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_token_key" ON "PasswordResetToken"("token");
