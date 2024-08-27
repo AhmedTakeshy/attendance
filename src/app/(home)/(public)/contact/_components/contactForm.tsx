@@ -8,6 +8,8 @@ import SubmitButton from "@/_components/submitButton"
 import { contactFormAction } from "@/_actions/userActions"
 import { toast } from "sonner"
 import { FaMapMarkerAlt } from "react-icons/fa"
+import { FaFacebookMessenger, FaSquareWhatsapp } from "react-icons/fa6"
+import Link from "next/link"
 
 export default function ContactForm() {
     const [isPending, setIsPending] = useState<boolean>(false)
@@ -133,11 +135,31 @@ export default function ContactForm() {
                             </FormItem>
                         )}
                     />
-                    <SubmitButton
-                        pending={isPending}
-                        className="w-1/2 p-3 my-2 text-sm font-bold tracking-wide uppercase transition-colors duration-500 rounded-lg font-man bg-blue-950 text-slate-100 focus:outline-none lg:w-1/4 hover:bg-blue-900">
-                        Send Message
-                    </SubmitButton>
+                    <div className="flex items-center justify-between">
+                        <SubmitButton
+                            pending={isPending}
+                            className="w-1/2 p-3 my-2 text-sm font-bold tracking-wide uppercase transition-colors duration-500 rounded-lg font-man bg-blue-950 text-slate-100 focus:outline-none lg:w-1/4 hover:bg-blue-900">
+                            Send Message
+                        </SubmitButton>
+                        <div className="flex items-center justify-between gap-2">
+                            <Link
+                                href='https://api.whatsapp.com/send?phone=905511635796'
+                                target='_blank'
+                                rel='noopener noreferrer'
+
+                            >
+                                <FaSquareWhatsapp size={25} className='fill-green-500 hover:fill-green-700 text-white' />
+                            </Link>
+                            <Link
+                                href={`https://m.me/ahmed.takeshy.1`}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='text-blue-500 hover:text-blue-700 '
+                            >
+                                <FaFacebookMessenger size={25} />
+                            </Link>
+                        </div>
+                    </div>
                 </form>
             </Form>
 
@@ -151,7 +173,6 @@ export default function ContactForm() {
                         Welcome to Attendance! <br />
                         The best place to track your attendance, and keep yourself updated We are here to help you with any questions you may have, so don&apos;t hesitate to contact us.
                     </p>
-
                     <div className="flex justify-start w-2/3 gap-2 mt-6">
                         <FaMapMarkerAlt className='pt-2' size={25} />
                         <div className="flex flex-col">
