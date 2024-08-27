@@ -159,7 +159,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                         </FormItem>
                     )}>
                 </FormField>
-                <div className="flex flex-col max-w-7xl w-full p-4 sm:divide-y-2 divide-slate-200 dark:divide-slate-700">
+                <div className="flex flex-col max-w-7xl w-full max-sm:px-2 sm:px-4 py-4 sm:divide-y-2 divide-slate-200 dark:divide-slate-700">
                     {days.map((day, i) => (
                         <div key={day.text} className='flex sm:flex-row flex-col items-center'>
                             <p className={`py-2 mt-4 sm:mt-0 px-4 md:basis-[10%] sm:basis-[20%] text-center ${day.text === "Days" ? "bg-diagonal bg-repeat" : "dark:text-slate-300 text-slate-500"}`}>
@@ -186,7 +186,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                                     </FormField>
                                 </div>
                             ) : (
-                                <div className="max-sm:max-w-sm md:basis-[90%] sm:basis-[80%] sm:mx-auto mx-2 gap-4 p-4 items-center  sm:rounded-none rounded-2xl shadow-input sm:shadow-none grid sm:!border-l-2  border-slate-200 dark:border-slate-700 sm:grid-cols-1 grid-cols-2 sm:overflow-x-scroll">
+                                <div className={`max-sm:max-w-sm md:basis-[90%] sm:basis-[80%] mx-auto gap-4 max-sm:px-2 sm:px-4 py-4 items-center  sm:rounded-none rounded-2xl shadow-input sm:shadow-none grid sm:!border-l-2  border-slate-200 dark:border-slate-700 sm:grid-cols-1 grid-cols-2 sm:overflow-x-scroll`}>
                                     <SubjectField day={day.value} />
                                 </div>
                             )}
