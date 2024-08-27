@@ -1,22 +1,7 @@
 import { getTableById } from "@/_actions/tableActions"
 import SimpleAttendanceTable from "@/app/(home)/_components/simpleAttendanceTable"
-import { prisma } from "@/lib/prisma"
-import { createPublicId, returnPublicId } from "@/lib/utils"
+import { returnPublicId } from "@/lib/utils"
 
-export async function generateStaticParams({ params: { profileId } }: { params: { profileId: string } }) {
-    const profileTables = await prisma.table.findMany({
-        where: {
-            userId: returnPublicId(profileId)
-        },
-        select: {
-            id: true,
-            publicId: true,
-        }
-    })
-    return profileTables.map((table) => ({
-        tableId: createPublicId(table.publicId, table.id),
-    }))
-}
 
 type Props = {
     params: {
