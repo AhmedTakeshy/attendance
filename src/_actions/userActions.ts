@@ -15,7 +15,12 @@ import { hash, compare } from "bcryptjs";
 import { User } from "@prisma/client";
 import { signIn, } from "@/lib/auth";
 import { createPublicId } from "@/lib/utils";
+import Mailjet from "node-mailjet";
 
+const mailjet = Mailjet.apiConnect(
+    `${process.env.MAILJET_API_KEY}`,
+    `${process.env.MAILJET_SECRET_KEY}`,
+)
 
 export async function contactFormAction(values: ContactSchema): Promise<ServerResponse<null>> {
 
@@ -26,6 +31,60 @@ export async function contactFormAction(values: ContactSchema): Promise<ServerRe
                 statusCode: 400,
                 status: "Error",
                 errorMessage: result.error.errors[0].message,
+            }
+        }
+        const { firstName, lastName, email, message, phone } = result.data
+        const request = await mailjet
+            .post("send", { version: "v3.1" })
+            .request({
+                Messages: [
+                    {
+                        From: {
+                            Email: "attendancetracking@mail.com",
+                            Name: "Attendance"
+                        },
+                        To: [
+                            {
+                                Email: email,
+                                Name: `${firstName} ${lastName}`
+                            },
+                        ],
+                        Subject: "Contact Form",
+                        TemplateID: 6236181,
+                        TemplateLanguage: true,
+                        Variables: {
+                            first_name: firstName,
+                        }
+                    },
+                    {
+                        From: {
+                            Email: "attendancetracking@mail.com",
+                            Name: "Attendance"
+                        },
+                        To: [
+                            {
+                                Email: "ahmedtakeshy7@gmail.com",
+                                Name: "Takeshy"
+                            },
+                        ],
+                        subject: `New Inquiry from attendance website`,
+                        textPart: `Email from: attendance website contact form`,
+                        htmlPart: `
+                        <h3>From: ${firstName} ${lastName}</h3>
+                        <h3>Email: ${email}</h3>
+                        <h3>Phone: ${phone}</h3>
+                        <p>Message: ${message}</p>
+                        `,
+                    },
+                ]
+            })
+        const res = await JSON.parse(JSON.stringify(request.body))
+        console.log("🚀 ~ contactFormAction ~ res.Messages[0].Status:", res.Messages[0].Status)
+        if (res.Messages[0].Status !== "success") {
+            return {
+                statusCode: 502,
+                status: "Error",
+                errorMessage: "Internal Server Error with sending contact form",
             }
         }
         return {
