@@ -13,6 +13,9 @@ const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
+  // The test environment that will be used for testing
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+
   // Stop running tests after `n` failures
   // bail: 0,
 
@@ -106,7 +109,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: undefined,
