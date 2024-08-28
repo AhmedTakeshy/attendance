@@ -9,13 +9,13 @@ import Link from "next/link"
 
 
 
-type Props = {
+type StudentsProps = {
     searchParams: {
         [key: string]: string | undefined
     }
 }
 
-export default async function page({ searchParams }: Props) {
+export default async function Students({ searchParams }: StudentsProps) {
     const session = await auth()
     const response = await getStudents({
         search: searchParams.search ?? "",

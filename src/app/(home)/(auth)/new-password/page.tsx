@@ -1,6 +1,6 @@
 import NewPasswordForm from "./_components/newPasswordForm";
 
-export default function page() {
+export default function NewPassword() {
     return (
         <NewPasswordForm />
     )

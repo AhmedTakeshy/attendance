@@ -1,12 +1,11 @@
 import { getStudentTables } from "@/_actions/studentActions"
-import { prisma } from "@/lib/prisma"
-import { createPublicId, returnPublicId } from "@/lib/utils"
+import { returnPublicId } from "@/lib/utils"
 import { auth } from "@/lib/auth"
 import { notFound, } from "next/navigation"
 import Profile from "../../_components/profile"
 
 
-type Props = {
+type StudentIdProps = {
   params: {
     studentId: string
   },
@@ -15,7 +14,7 @@ type Props = {
   }
 }
 
-export default async function StudentLayout({ params, searchParams }: Props) {
+export default async function StudentId({ params, searchParams }: StudentIdProps) {
   const { studentId } = params
   const session = await auth()
 

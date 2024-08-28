@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function page() {
+export default function About() {
     return (
 
         <section className="py-12 relative xl:mr-0 lg:mr-5 mr-0">

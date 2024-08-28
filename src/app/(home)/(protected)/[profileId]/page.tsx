@@ -5,7 +5,7 @@ import Profile from '../_components/profile'
 import { getStudentTables } from '@/_actions/studentActions'
 
 
-type Props = {
+type ProfileIdProps = {
     params: {
         profileId: string
     },
@@ -14,7 +14,7 @@ type Props = {
     }
 }
 
-export default async function page({ params, searchParams }: Props) {
+export default async function ProfileId({ params, searchParams }: ProfileIdProps) {
     const { profileId } = params
     const session = await auth()
     if (session?.user.id !== profileId) {

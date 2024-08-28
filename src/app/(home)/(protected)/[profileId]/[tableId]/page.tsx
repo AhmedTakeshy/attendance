@@ -3,14 +3,14 @@ import SimpleAttendanceTable from "@/app/(home)/_components/simpleAttendanceTabl
 import { returnPublicId } from "@/lib/utils"
 
 
-type Props = {
+type ProfileTableIdProps = {
     params: {
         profileId: string,
         tableId: string,
     },
 }
 
-export default async function page({ params }: Props) {
+export default async function ProfileTableId({ params }: ProfileTableIdProps) {
     const { tableId, profileId } = params
     const response = await getTableById({ tableId: returnPublicId(tableId), studentId: returnPublicId(profileId) })
 

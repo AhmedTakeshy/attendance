@@ -4,11 +4,11 @@ import { auth } from "@/lib/auth"
 import { FaCircleCheck, FaCircleExclamation } from "react-icons/fa6";
 import { ImSpinner9 } from "react-icons/im";
 
-type Props = {
+type VerifyEmailProps = {
     searchParams: { [key: string]: string | string | undefined }
 }
 
-export default async function page({ searchParams }: Readonly<Props>) {
+export default async function VerifyEmail({ searchParams }: Readonly<VerifyEmailProps>) {
     const session = await auth()
     const { token } = searchParams
     const response = await verifyEmail(token as string, session?.user.email as string)
