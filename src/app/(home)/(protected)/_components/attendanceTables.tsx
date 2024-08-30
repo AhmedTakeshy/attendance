@@ -33,10 +33,10 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
         toast.success("Table Id copied to clipboard")
     }
 
-    async function handleDeleteTable(tableId: number) {
-        setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], delete: true } }))
+    async function handleDeleteTable(tableId: string) {
+        setIsPending(prev => ({ ...prev, [tableId]: { ...prev[returnPublicId(tableId)], delete: true } }))
         try {
-            const res = await deleteTable({ tableId, studentId: data.student.id })
+            const res = await deleteTable({ tableId, studentId: data.student.publicId })
             if (res.status === "Success") {
                 toast.success("Table has been deleted successfully.")
             } else {
@@ -45,7 +45,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
         } catch (error) {
             toast.error("Something went wrong!")
         }
-        setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], delete: false } }))
+        setIsPending(prev => ({ ...prev, [tableId]: { ...prev[returnPublicId(tableId)], delete: false } }))
     }
 
     async function handleCopyTable(tableId: number) {
@@ -97,7 +97,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                                     {!isStudent && (
                                         <SubmitButton
                                             pending={isDeletePending}
-                                            onClick={() => handleDeleteTable(table.id)}
+                                            onClick={() => handleDeleteTable(tableId)}
                                             className="!bg-rose-500 hover:!bg-rose-600 text-inherit">
                                             Delete
                                         </SubmitButton>

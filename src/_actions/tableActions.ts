@@ -1,7 +1,7 @@
 "use server"
 import { createAttendanceTableSchema, CreateAttendanceTableSchema } from "@/lib/formSchemas";
 import { prisma } from "@/lib/prisma";
-import { createPublicId } from "@/lib/utils";
+import { createPublicId, returnPublicId } from "@/lib/utils";
 import { Day, DayName, Subject, Table } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -222,12 +222,14 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
     }
 }
 
-export async function deleteTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
+export async function deleteTable({ tableId, studentId }: {tableId:string,studentId:string}): Promise<ServerResponse<null>> {
+    const tableIdNum = returnPublicId(tableId)
+    const studentIdNum = returnPublicId(studentId)
     try {
         const res = await prisma.table.delete({
             where: {
-                id: tableId,
-                userId: studentId
+                id: tableIdNum,
+                userId: studentIdNum
             }
         })
         revalidatePath(`/${studentId}`)
