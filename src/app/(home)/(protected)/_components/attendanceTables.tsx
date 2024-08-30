@@ -35,8 +35,9 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
 
     async function handleDeleteTable(tableId: number) {
         setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], delete: true } }))
+        const isOwner = createPublicId(data.student.publicId, data.student.id) === session?.user.id
         try {
-            const res = await deleteTable({ tableId, studentId: data.student.id })
+            const res = await deleteTable({ tableId, studentId: isOwner ? data.student.id : 0 })
             if (res.status === "Success") {
                 toast.success("Table has been deleted successfully.")
             } else {
