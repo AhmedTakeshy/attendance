@@ -223,6 +223,7 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
 }
 
 export async function deleteTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
+    //const isOwner = createPublicId(data.student.publicId, data.student.id) === session?.user.id
     try {
         const res = await prisma.table.delete({
             where: {
