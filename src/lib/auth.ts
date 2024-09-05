@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import authConfig from "./auth.config";
 import { createPublicId } from "./utils";
 declare module "next-auth" {

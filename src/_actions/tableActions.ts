@@ -1,6 +1,6 @@
 "use server"
 import { createAttendanceTableSchema, CreateAttendanceTableSchema } from "@/lib/formSchemas";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { createPublicId } from "@/lib/utils";
 import { Day, DayName, Subject, Table } from "@prisma/client";
 import { revalidatePath } from "next/cache";

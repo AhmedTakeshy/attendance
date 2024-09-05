@@ -1,5 +1,5 @@
 "use server"
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { Day, Subject, Table, User } from "@prisma/client";
 
 type Props = {

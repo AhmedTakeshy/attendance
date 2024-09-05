@@ -9,7 +9,7 @@ import {
     signUpFormSchema,
     userUpdateSchema
 } from "@/lib/formSchemas";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { hash, compare } from "bcryptjs";
 import { User } from "@prisma/client";
