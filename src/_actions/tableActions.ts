@@ -1,10 +1,10 @@
 "use server"
 import { createAttendanceTableSchema, CreateAttendanceTableSchema } from "@/lib/formSchemas";
 import prisma from "@/lib/prisma";
-import { createPublicId } from "@/lib/utils";
+import { createPublicId, returnPublicId } from "@/lib/utils";
 import { Day, DayName, Subject, Table } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-
+import { auth } from "@/lib/auth"
 type Props = {
     tableId: number
     studentId: number
@@ -223,7 +223,15 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
 }
 
 export async function deleteTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
-    //const isOwner = createPublicId(data.student.publicId, data.student.id) === session?.user.id
+    const session = await auth()
+    const isOwner = studentId === returnPublicId(session?.user.id as string)
+    if (!isOwner) {
+        return {
+            statusCode: 403,
+            errorMessage: "You are not authorized to delete this table",
+            status: "Error",
+        }
+    }
     try {
         const res = await prisma.table.delete({
             where: {
@@ -248,6 +256,7 @@ export async function deleteTable({ tableId, studentId }: Props): Promise<Server
 }
 
 export async function updateTable(data: CreateAttendanceTableSchema, { tableId, studentId }: Props): Promise<ServerResponse<null>> {
+
     try {
         const result = await createAttendanceTableSchema.safeParseAsync(data)
         if (!result.success) {
@@ -362,6 +371,64 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: { t
         return {
             statusCode: 500,
             errorMessage: "Failed to add absence",
+            status: "Error",
+        }
+    }
+}
+
+export async function removeAbsence({ tableId, studentId, dayName, subjectId }: { tableId: number, studentId: number, dayName: DayName, subjectId: number }): Promise<ServerResponse<null>> {
+    try {
+        const table = await prisma.table.findUnique({
+            where: {
+                id: tableId,
+                userId: studentId
+            },
+            include: {
+                days: {
+                    where: {
+                        name: dayName
+                    },
+                    include: {
+                        subjects: true
+                    }
+                }
+            }
+        })
+        if (!table) {
+            return {
+                statusCode: 404,
+                errorMessage: "Table not found",
+                status: "Error",
+            }
+        }
+        const day = table.days[0]
+        const subject = day.subjects.find(subject => subject.id === subjectId)
+        if (!subject) {
+            return {
+                statusCode: 404,
+                errorMessage: "Subject not found",
+                status: "Error",
+            }
+        }
+        await prisma.subject.update({
+            where: {
+                id: subject.id
+            },
+            data: {
+                absence: subject.absence - 1
+            }
+        })
+        revalidatePath(`/${studentId}/${tableId}`)
+        return {
+            statusCode: 200,
+            successMessage: "Absence removed successfully",
+            status: "Success",
+            data: null
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to remove absence",
             status: "Error",
         }
     }
