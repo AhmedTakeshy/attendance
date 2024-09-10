@@ -1,4 +1,4 @@
-import { prisma } from "./prisma"
+import prisma from "./prisma"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import type { NextAuthConfig } from "next-auth";

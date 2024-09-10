@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
 import { Toaster } from "@/_components/ui/sonner";
+import NextWebVitals from "nextlevelpackage";
 
 const dm = DM_Sans({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default async function RootLayout({ children }: Props) {
           disableTransitionOnChange
         >
           {children}
+          <NextWebVitals />
           <Toaster richColors />
         </ThemeProvider>
       </body>
