@@ -23,7 +23,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/_components/ui/avatar"
 import { MdSpaceDashboard } from "react-icons/md"
 
 
-
 export default function NavMenu() {
     const [open, setOpen] = useState<boolean>(false)
     const session = useSession()
@@ -41,16 +40,16 @@ export default function NavMenu() {
             <Link href="/" aria-describedby="open home page" aria-label="open home page" aria-controls="navbar-default" aria-expanded="false">
                 <Image src={logo} width={256} height={96} alt="logo" priority className="sm:w-64 sm:h-24 w-48 h-16" />
             </Link>
-            <NavigationMenu className={` items-center  justify-between hidden gap-2 md:flex`}>
+            <NavigationMenu data-testid={"nav-menu"} className={` items-center  justify-between hidden gap-2 md:flex`}>
                 <NavigationMenuList className="items-center justify-between hidden gap-2 md:flex ">
                     <NavigationMenuItem>
                         <Link href="/" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
-                    <NavigationMenuItem tabIndex={-1}>
-                        <Link href="/library" tabIndex={-1} legacyBehavior passHref>
-                            <NavigationMenuLink tabIndex={-1} className={`${navigationMenuTriggerStyle()} pointer-events-none`}>Library</NavigationMenuLink>
+                    <NavigationMenuItem>
+                        <Link href="/library?page=1" legacyBehavior passHref>
+                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
@@ -72,7 +71,7 @@ export default function NavMenu() {
                     </Button>
                     :
                     session.status === "authenticated" ?
-                        <DropdownMenu>
+                        <DropdownMenu data-testid={"auth-options"}>
                             <DropdownMenuTrigger asChild>
                                 <Avatar className="hover:cursor-pointer">
                                     <AvatarImage src={session.data.user.image || ""} alt={`${fullName}-image`} />
@@ -121,10 +120,11 @@ export default function NavMenu() {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem
-                                        asChild
-                                        onClick={logoutAction}>
-                                        <span className="hover:cursor-pointer hover:!text-red-600">
+                                    <DropdownMenuItem asChild>
+                                        <span
+                                            className="hover:cursor-pointer hover:!text-red-600"
+                                            onClick={logoutAction}
+                                        >
                                             <PiSignOutBold className="w-5 h-5 mr-2" />
                                             Logout
                                         </span>
@@ -143,7 +143,7 @@ export default function NavMenu() {
             </div>
 
             {/* Nav for small screens */}
-            < div className={`flex items-center gap-3 justify-between h-full md:hidden rounded-xl `}>
+            <div className={`flex items-center gap-3 justify-between h-full md:hidden rounded-xl `}>
                 {!!session.data &&
                     <div className="items-center gap-3 flex">
                         <DropdownMenu>
@@ -229,9 +229,9 @@ export default function NavMenu() {
                                             <NavigationMenuLink onClick={() => setOpen(false)} className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
                                         </Link>
                                     </NavigationMenuItem>
-                                    <NavigationMenuItem tabIndex={-1}>
-                                        <Link href="/library" tabIndex={-1} legacyBehavior passHref className="pointer-events-none">
-                                            <NavigationMenuLink tabIndex={-1} onClick={() => setOpen(false)} className={`${navigationMenuTriggerStyle()} pointer-events-none`}>Library</NavigationMenuLink>
+                                    <NavigationMenuItem>
+                                        <Link href="/library?page=1" legacyBehavior passHref>
+                                            <NavigationMenuLink onClick={() => setOpen(false)} className={navigationMenuTriggerStyle()}>Library</NavigationMenuLink>
                                         </Link>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>

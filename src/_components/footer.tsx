@@ -3,8 +3,8 @@ import React from 'react'
 
 export default function Footer() {
     return (
-        <div className='sm:flex-row flex flex-col items-center justify-center gap-2 mt-8 text-gray-400'>
-            <p >
+        <div className='sm:flex-row flex flex-col items-center justify-center gap-2 mt-8 text-gray-400 pb-2'>
+            <p className="text-center">
                 Copyrights &copy; 2024 Attendance. All Rights Reserved.
             </p>
             <span className='sm:inline-flex hidden'>-</span>
