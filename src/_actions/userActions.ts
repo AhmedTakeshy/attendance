@@ -13,8 +13,8 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { hash, compare } from "bcryptjs";
 import { User } from "@prisma/client";
-import { signIn, } from "@/lib/auth";
-import { createPublicId } from "@/lib/utils";
+import { auth, signIn, } from "@/lib/auth";
+import { createPublicId, returnPublicId } from "@/lib/utils";
 import Mailjet from "node-mailjet";
 
 const mailjet = Mailjet.apiConnect(
@@ -78,8 +78,8 @@ export async function contactFormAction(values: ContactSchema): Promise<ServerRe
                     },
                 ]
             })
+
         const res = await JSON.parse(JSON.stringify(request.body))
-        console.log("🚀 ~ contactFormAction ~ res.Messages[0].Status:", res.Messages[0].Status)
         if (res.Messages[0].Status !== "success") {
             return {
                 statusCode: 502,
@@ -161,7 +161,15 @@ export async function updateUser(values: UserUpdateSchema): Promise<ServerRespon
             }
         }
         const { firstName, lastName, email, newEmail } = result.data
-
+        const session = await auth()
+        const isOwner = email === session?.user.email
+        if (!isOwner) {
+            return {
+                statusCode: 403,
+                errorMessage: "You are not authorized to delete this table",
+                status: "Error",
+            }
+        }
         if (newEmail) {
             const existedUserEmail = await prisma.user.findUnique({
                 where: {
@@ -200,6 +208,15 @@ export async function updatePassword(values: PasswordSchema): Promise<ServerResp
             return { status: "Error", errorMessage: "Something wrong with entered data!", statusCode: 401 }
         }
         const { currentPassword, newPassword, email } = result.data
+        const session = await auth()
+        const isOwner = email === session?.user.email
+        if (!isOwner) {
+            return {
+                statusCode: 403,
+                errorMessage: "You are not authorized to delete this table",
+                status: "Error",
+            }
+        }
         const user = await prisma.user.findUnique({
             where: {
                 email
@@ -267,11 +284,20 @@ export async function login({ email, password }: { email: string, password: stri
     }
 }
 
-export async function deleteUser(StudentId: number): Promise<ServerResponse<null>> {
+export async function deleteUser(studentId: number): Promise<ServerResponse<null>> {
+    const session = await auth()
+    const isOwner = studentId === returnPublicId(session?.user.id as string)
+    if (!isOwner) {
+        return {
+            statusCode: 403,
+            errorMessage: "You are not authorized to delete this table",
+            status: "Error",
+        }
+    }
     try {
         await prisma.user.delete({
             where: {
-                id: StudentId
+                id: studentId
             }
         })
         return {
@@ -281,7 +307,6 @@ export async function deleteUser(StudentId: number): Promise<ServerResponse<null
             data: null
         }
     } catch (error) {
-        console.log("🚀 ~ deleteUser ~ error:", error)
         return {
             status: "Error",
             errorMessage: "Something went wrong!",

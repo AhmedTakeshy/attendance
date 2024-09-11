@@ -5,10 +5,17 @@ import { createPublicId, returnPublicId } from "@/lib/utils";
 import { Day, DayName, Subject, Table } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth"
+
 type Props = {
-    tableId: number
-    studentId: number
+    tableId?: number
+    studentId?: number
 }
+
+export type TableWithSubjectsNumber = Table & {
+    days: (Day & { subjects: number })[];
+};
+
+export type TableObj = (Table & { days: (Day & { subjects: Subject[] })[] });
 
 export async function createAttendanceTable(data: CreateAttendanceTableSchema): Promise<ServerResponse<null>> {
     try {
@@ -33,7 +40,7 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
             })) : [],
         }));
 
-        const table = await prisma.table.create({
+        await prisma.table.create({
             data: {
                 name: tableName,
                 userId,
@@ -72,12 +79,77 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
     }
 }
 
-export type TableObj = (Table & { days: (Day & { subjects: Subject[] })[] });
-export async function getLastAttendanceTable(studentId: number): Promise<ServerResponse<{ table: TableObj }>> {
+type GetTablesProps = {
+    page: number
+    search?: {
+        name?: string,
+        id?: string
+    }
+}
+export async function getAllTables({ page, search }: GetTablesProps): Promise<ServerResponse<Metadata<{ tables: TableWithSubjectsNumber[] }>>> {
+    const searchId = search?.id ? returnPublicId(search.id) : undefined
+
+    try {
+        const tables = await prisma.table.findMany({
+            where: {
+                isPublic: true,
+                name: { contains: search?.name, mode: "insensitive" },
+                id: searchId,
+            },
+            include: {
+                days: {
+                    include: {
+                        _count: {
+                            select: {
+                                subjects: true
+                            }
+                        }
+                    }
+                }
+            },
+            skip: (page - 1) * 10,
+            take: 10
+        })
+
+        const totalTables = await prisma.table.count({
+            where: {
+                isPublic: true,
+                name: { contains: search?.name, mode: "insensitive" },
+                id: searchId,
+            }
+        })
+        return {
+            statusCode: 200,
+            successMessage: "Tables fetched successfully",
+            status: "Success",
+            data: {
+                tables: tables.map(table => ({
+                    ...table,
+                    days: table.days.map(day => ({
+                        ...day,
+                        subjects: day._count.subjects
+                    }))
+                })),
+                metadata: {
+                    hasNextPage: totalTables > page * 10,
+                    totalPages: Math.ceil(totalTables / 10)
+                }
+            }
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            errorMessage: "Failed to fetch tables",
+            status: "Error",
+        }
+    }
+}
+
+export async function getLastAttendanceTable({ studentId }: Props): Promise<ServerResponse<{ table: TableObj }>> {
     try {
         const table = await prisma.table.findFirst({
             where: {
-                userId: studentId,
+                userId: studentId as number,
             },
             include: {
                 days: {
@@ -114,12 +186,11 @@ export async function getLastAttendanceTable(studentId: number): Promise<ServerR
     }
 }
 
-export async function getTableById({ tableId, studentId }: Props): Promise<ServerResponse<{ table: TableObj }>> {
+export async function getTableById({ tableId }: Props): Promise<ServerResponse<{ table: TableObj }>> {
     try {
         const table = await prisma.table.findUnique({
             where: {
-                id: tableId,
-                userId: studentId
+                id: tableId as number,
             },
             include: {
                 days: {
@@ -185,7 +256,7 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
         await prisma.table.create({
             data: {
                 name: table.name,
-                userId: studentId,
+                userId: studentId as number,
                 days: {
                     create: daysArray.map(day => ({
                         name: day.name,
@@ -205,7 +276,7 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
                 publicId: true
             }
         })
-        revalidatePath(`/${createPublicId(user?.publicId as string, studentId)}`)
+        revalidatePath(`/${createPublicId(user?.publicId as string, studentId as number)}`)
         return {
             statusCode: 200,
             successMessage: "Table copied successfully",
@@ -213,7 +284,6 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
             data: null
         }
     } catch (error) {
-        console.log("🚀 ~ copyTable ~ error:", error)
         return {
             statusCode: 500,
             errorMessage: "Failed to copy table",
@@ -256,7 +326,15 @@ export async function deleteTable({ tableId, studentId }: Props): Promise<Server
 }
 
 export async function updateTable(data: CreateAttendanceTableSchema, { tableId, studentId }: Props): Promise<ServerResponse<null>> {
-
+    const session = await auth()
+    const isOwner = studentId === returnPublicId(session?.user.id as string)
+    if (!isOwner) {
+        return {
+            statusCode: 403,
+            errorMessage: "You are not authorized to delete this table",
+            status: "Error",
+        }
+    }
     try {
         const result = await createAttendanceTableSchema.safeParseAsync(data)
         if (!result.success) {
@@ -318,7 +396,17 @@ export async function updateTable(data: CreateAttendanceTableSchema, { tableId, 
     }
 }
 
-export async function addAbsence({ tableId, studentId, dayName, subjectId }: { tableId: number, studentId: number, dayName: DayName, subjectId: number }): Promise<ServerResponse<null>> {
+type AbsenceProps = { tableId: number, studentId: number, dayName: DayName, subjectId: number }
+export async function addAbsence({ tableId, studentId, dayName, subjectId }: AbsenceProps): Promise<ServerResponse<null>> {
+    const session = await auth()
+    const isOwner = studentId === returnPublicId(session?.user.id as string)
+    if (!isOwner) {
+        return {
+            statusCode: 403,
+            errorMessage: "You are not authorized to delete this table",
+            status: "Error",
+        }
+    }
     try {
         const table = await prisma.table.findUnique({
             where: {
@@ -376,7 +464,16 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: { t
     }
 }
 
-export async function removeAbsence({ tableId, studentId, dayName, subjectId }: { tableId: number, studentId: number, dayName: DayName, subjectId: number }): Promise<ServerResponse<null>> {
+export async function removeAbsence({ tableId, studentId, dayName, subjectId }: AbsenceProps): Promise<ServerResponse<null>> {
+    const session = await auth()
+    const isOwner = studentId === returnPublicId(session?.user.id as string)
+    if (!isOwner) {
+        return {
+            statusCode: 403,
+            errorMessage: "You are not authorized to delete this table",
+            status: "Error",
+        }
+    }
     try {
         const table = await prisma.table.findUnique({
             where: {

@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/prisma";
-import { Day, Subject, Table, User } from "@prisma/client";
+import { User } from "@prisma/client";
+import { TableWithSubjectsNumber } from "./tableActions";
 
 type Props = {
     search?: string
@@ -8,10 +9,8 @@ type Props = {
     studentId: number
     isPublic?: boolean
 }
-type TableWithDaysAndSubjects = Table & {
-    days: (Day & { subjects: number })[];
-};
-export type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: TableWithDaysAndSubjects[] }
+
+export type UserWithTables = Omit<User, "password" | "createdAt" | "updatedAt"> & { tables: TableWithSubjectsNumber[] }
 export type UserWithTableCount = Omit<User, "password" | "createdAt" | "updatedAt"> & { tableCount: number }
 
 export async function getStudents({ search, page = 1, studentId }: Props): Promise<ServerResponse<Metadata<{ students: UserWithTableCount[] }>>> {
@@ -21,8 +20,7 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
                 // role: "USER",
                 id: { not: studentId },
                 OR: [
-                    { firstName: { contains: search, mode: "insensitive" } },
-                    { lastName: { contains: search, mode: "insensitive" } },
+                    { name: { contains: search, mode: "insensitive" } },
                     { email: { contains: search, mode: "insensitive" } }
                 ]
             },
@@ -56,8 +54,7 @@ export async function getStudents({ search, page = 1, studentId }: Props): Promi
                 // role: "USER",
                 id: { not: studentId },
                 OR: [
-                    { firstName: { contains: search, mode: "insensitive" } },
-                    { lastName: { contains: search, mode: "insensitive" } },
+                    { name: { contains: search, mode: "insensitive" } },
                     { email: { contains: search, mode: "insensitive" } }
                 ]
             }
