@@ -13,7 +13,6 @@ export default function LoginWithProvider() {
         try {
             await signIn(provider.type)
         } catch (error) {
-            console.log("🚀 ~ loginWithProvider ~ error:", error)
             return { error: true, message: "Something went wrong!", status: 401 }
         }
         setIsPending(prev => ({ ...prev, [provider.type]: false }))

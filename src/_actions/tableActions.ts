@@ -126,7 +126,6 @@ export async function getLibraryTables({ page, search }: GetTablesProps): Promis
             skip: (page - 1) * 10,
             take: 10
         })
-        console.log("🚀 ~ getLibraryTables ~ library:", library)
 
         const totalTables = await prisma.library.count({
             where: {
@@ -142,7 +141,6 @@ export async function getLibraryTables({ page, search }: GetTablesProps): Promis
             ...table,
             days: table.days.map(day => ({ ...day, subjects: day._count.subjects }))
         }))).flat()
-        console.log("🚀 ~ libraryTables ~ libraryTables:", libraryTables)
         return {
             statusCode: 200,
             successMessage: "Tables fetched successfully",
