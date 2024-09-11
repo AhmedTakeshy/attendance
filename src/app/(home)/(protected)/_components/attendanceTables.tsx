@@ -1,12 +1,12 @@
+"use client"
 import { UserWithTables } from '@/_actions/studentActions'
-import { copyTable, deleteTable } from '@/_actions/tableActions'
+import { copyTable, deleteTable, TableWithSubjectsNumber } from '@/_actions/tableActions'
 import PaginationControl from '@/_components/PaginationControl'
 import SubmitButton from '@/_components/submitButton'
 import { Button } from '@/_components/ui/button'
 import { Switch } from '@/_components/ui/switch'
 import { Table as TableRoot, TableHeader, TableRow, TableHead, TableBody, TableCell, } from '@/_components/ui/table'
 import { createPublicId, returnPublicId } from '@/lib/utils'
-import { Table } from '@prisma/client'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -14,11 +14,13 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 
+
 type AttendanceTablesProps = {
-    data: Metadata<{ student: UserWithTables }>
+    data: Metadata<{ student: UserWithTables } | { tables: TableWithSubjectsNumber[] }>
 }
 
 export default function AttendanceTables({ data }: AttendanceTablesProps) {
+    const tablesData = "student" in data ? data.student.tables : data.tables
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const [isPending, setIsPending] = useState<{ [key: string]: { delete: boolean, use: boolean } }>({})
@@ -26,7 +28,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
     const router = useRouter()
     const { data: session } = useSession()
 
-    const isStudent = pathname.includes("students")
+    const isStudent = pathname.includes("students") || pathname.includes("library");
 
     function copyTableId(tableId: string) {
         navigator.clipboard.writeText(tableId)
@@ -34,6 +36,8 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
     }
 
     async function handleDeleteTable(tableId: number) {
+        // if the data doesn't have the type of student, then return
+        if (!("student" in data)) return
         setIsPending(prev => ({ ...prev, [tableId]: { ...prev[tableId], delete: true } }))
         try {
             const res = await deleteTable({ tableId, studentId: data.student.id })
@@ -75,7 +79,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.student.tables.map((table) => {
+                {tablesData.map((table) => {
                     const tableId = createPublicId(table.publicId, table.id)
                     const isDeletePending = isPending[table.id]?.delete || false
                     const isUsePending = isPending[table.id]?.use || false

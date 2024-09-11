@@ -9,7 +9,7 @@ import SimpleAttendanceTable from "./_components/simpleAttendanceTable";
 export default async function Home() {
   const words = ["easy", "responsive", "smart", "accessible"];
   const session = await auth();
-  const response = session?.user ? await getLastAttendanceTable(returnPublicId(session?.user.id as string)) : null;
+  const response = session?.user ? await getLastAttendanceTable({ studentId: returnPublicId(session?.user.id as string) }) : null;
 
   return (
     session?.user ? (

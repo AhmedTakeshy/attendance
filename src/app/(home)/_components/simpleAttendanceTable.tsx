@@ -32,7 +32,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
     const currentDay = useMemo(() => table.days.find(day => day.name === selectedDay), [selectedDay, table.days])
     const today = useMemo(() => table.days[new Date().getDay() - 1]?.name, [table.days])
     const isMoreDetails = useMemo(() => pathname.includes(`${createPublicId(table.publicId as string, table.id as number)}`), [pathname, table.publicId, table.id])
-    const notForStudent = useMemo(() => !pathname.includes("students"), [pathname])
+    const notForPublic = useMemo(() => !pathname.includes("students") && !pathname.includes("library"), [pathname])
 
     const handleDayChange = (dayName: DayName) => setSelectedDay(dayName)
 
@@ -73,7 +73,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
 
     return (
         <div className="flex flex-col w-full max-sm:max-w-md sm:px-8 px-4 mx-auto max-w-5xl">
-            {notForStudent && (
+            {notForPublic && (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button size={"icon"} variant={"outline"} className='ml-auto'>
@@ -158,10 +158,10 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                         currentDay.subjects.map((subject) => (
                                             <div
                                                 key={subject.id}
-                                                className={`flex flex-col items-center ${notForStudent ? "" : "pt-4"} gap-2 ${currentDay.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
-                                                {notForStudent && (
+                                                className={`flex flex-col items-center ${notForPublic ? "" : "pt-4"} gap-2 ${currentDay.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
+                                                {notForPublic && (
                                                     <SubmitButton
-                                                        disabled={!notForStudent}
+                                                        disabled={!notForPublic}
                                                         onClick={() => handleAbsence(currentDay.name, subject.id)}
                                                         pending={isPending[subject.id] || false}
                                                         className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
@@ -207,10 +207,10 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                             day.subjects.map((subject) => (
                                                 <div
                                                     key={subject.id}
-                                                    className={`flex flex-col items-center ${notForStudent ? "" : "pt-4"} gap-2 ${day.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
-                                                    {notForStudent && (
+                                                    className={`flex flex-col items-center ${notForPublic ? "" : "pt-4"} gap-2 ${day.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
+                                                    {notForPublic && (
                                                         <SubmitButton
-                                                            disabled={!notForStudent}
+                                                            disabled={!notForPublic}
                                                             onClick={() => handleAbsence(day.name, subject.id)}
                                                             pending={isPending[subject.id] || false}
                                                             className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
