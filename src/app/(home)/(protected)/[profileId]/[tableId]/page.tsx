@@ -5,14 +5,13 @@ import { returnPublicId } from "@/lib/utils"
 
 type ProfileTableIdProps = {
     params: {
-        profileId: string,
         tableId: string,
     },
 }
 
 export default async function ProfileTableId({ params }: ProfileTableIdProps) {
-    const { tableId, profileId } = params
-    const response = await getTableById({ tableId: returnPublicId(tableId), studentId: returnPublicId(profileId) })
+    const { tableId } = params
+    const response = await getTableById({ tableId: returnPublicId(tableId) })
 
     return (
         response.status === "Success" ? (
