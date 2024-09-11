@@ -1,4 +1,4 @@
-import { getAllTables } from "@/_actions/tableActions"
+import { getLibraryTables } from "@/_actions/tableActions"
 import Search from "@/_components/search"
 import AttendanceTables from "../../(protected)/_components/attendanceTables"
 
@@ -8,7 +8,7 @@ type LibraryProps = {
     }
 }
 export default async function Library({ searchParams }: LibraryProps) {
-    const response = await getAllTables({
+    const response = await getLibraryTables({
         search: { name: searchParams?.name, id: searchParams?.id },
         page: parseInt(searchParams.page ?? "1"),
     })
@@ -19,13 +19,18 @@ export default async function Library({ searchParams }: LibraryProps) {
                 <Search placeholder="Search tables..." option1="id" option2="name" />
             </div>
             {response.status === "Success" ? (
-                <div className="px-1 sm:px-4 md:px-8 mt-2">
+                <div className="px-1 sm:px-4 md:px-8 mt-2 w-full max-w-6xl">
                     {response.data.tables.length > 0 ? (
                         <AttendanceTables data={response.data} />
                     ) : (
                         <div className="flex items-center justify-center">
                             <p className="text-lg dark:text-rose-200 text-rose-400">
-                                No tables found with this <span className="underline">{`${searchParams?.name ? "name: " + searchParams?.name : "id: " + searchParams?.id}`}.</span>
+                                No tables found{" "}
+                                {(searchParams?.name || searchParams?.id) && (
+                                    <span className={`underline`}>
+                                        with this {`${searchParams?.name ? "name: " + searchParams?.name : "id: " + searchParams?.id}`}.
+                                    </span>
+                                )}
                             </p>
                         </div>
                     )}

@@ -28,7 +28,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
     const router = useRouter()
     const { data: session } = useSession()
 
-    const isStudent = pathname.includes("students") || pathname.includes("library");
+    const isPublic = pathname.includes("students") || pathname.includes("library");
 
     function copyTableId(tableId: string) {
         navigator.clipboard.writeText(tableId)
@@ -73,8 +73,9 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
             <TableHeader>
                 <TableRow>
                     <TableHead>Table name</TableHead>
-                    <TableHead className="hidden sm:table-cell">Subjects no.</TableHead>
-                    <TableHead className="hidden md:table-cell">Public</TableHead>
+                    <TableHead className="table-cell text-center">Subjects no.</TableHead>
+                    <TableHead className="hidden sm:table-cell text-center">UsedBy</TableHead>
+                    {!isPublic && <TableHead className="hidden md:table-cell text-center">Public</TableHead>}
                     <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -87,18 +88,19 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                     return (
                         <TableRow key={tableId} className="dark:hover:bg-white/20">
                             <TableCell>{table.name}</TableCell>
-                            <TableCell className='hidden sm:table-cell'>{subjectsCount}</TableCell>
-                            <TableCell className='hidden md:table-cell'>
-                                <Switch
-                                    checked={table.isPublic}
-                                />
-                            </TableCell>
-                            <TableCell align='right' className="w-80">
+                            <TableCell className='text-center'>{subjectsCount}</TableCell>
+                            <TableCell className='hidden sm:table-cell text-center'>{table.tableViews}</TableCell>
+                            {!isPublic && (
+                                <TableCell className='hidden md:table-cell text-center'>
+                                    <Switch checked={table.isPublic} />
+                                </TableCell>
+                            )}
+                            <TableCell align='right' className="md:w-80 w-40 sm:w-60">
                                 <div className="space-x-2 flex sm:flex-row flex-col max-sm:space-y-2 justify-end sm:items-center items-end">
                                     <Button asChild className="bg-brand-300 hover:bg-brand-400 dark:bg-navy-500 dark:hover:bg-navy-600 text-inherit">
                                         <Link href={`${pathname}/${tableId}`} >View</Link>
                                     </Button>
-                                    {!isStudent && (
+                                    {!isPublic && (
                                         <SubmitButton
                                             pending={isDeletePending}
                                             onClick={() => handleDeleteTable(table.id)}
@@ -109,7 +111,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                                     <Button onClick={() => copyTableId(tableId)} className="bg-green-500 hover:bg-green-700 text-inherit">
                                         Copy Id
                                     </Button>
-                                    {isStudent && (
+                                    {isPublic && (
                                         <SubmitButton
                                             pending={isUsePending}
                                             onClick={() => handleCopyTable(table.id)}
@@ -123,7 +125,7 @@ export default function AttendanceTables({ data }: AttendanceTablesProps) {
                     )
                 })}
                 <TableRow className='hover:bg-transparent'>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                         <PaginationControl
                             currentPage={tablesPage}
                             metadata={data.metadata}

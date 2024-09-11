@@ -40,7 +40,7 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
             })) : [],
         }));
 
-        await prisma.table.create({
+        const table = await prisma.table.create({
             data: {
                 name: tableName,
                 userId,
@@ -63,6 +63,15 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
                 publicId: true
             }
         })
+        if (isPublic) {
+            await prisma.library.create({
+                data: {
+                    tables: {
+                        connect: { id: table.id }
+                    }
+                }
+            })
+        }
         revalidatePath(`/${createPublicId(user?.publicId as string, userId)}`)
         return {
             statusCode: 200,
@@ -86,22 +95,29 @@ type GetTablesProps = {
         id?: string
     }
 }
-export async function getAllTables({ page, search }: GetTablesProps): Promise<ServerResponse<Metadata<{ tables: TableWithSubjectsNumber[] }>>> {
+export async function getLibraryTables({ page, search }: GetTablesProps): Promise<ServerResponse<Metadata<{ tables: TableWithSubjectsNumber[] }>>> {
     const searchId = search?.id ? returnPublicId(search.id) : undefined
 
     try {
-        const tables = await prisma.table.findMany({
+        const library = await prisma.library.findMany({
             where: {
-                isPublic: true,
-                name: { contains: search?.name, mode: "insensitive" },
-                id: searchId,
+                tables: {
+                    every: {
+                        name: { contains: search?.name, mode: "insensitive" },
+                        id: searchId,
+                    }
+                }
             },
             include: {
-                days: {
+                tables: {
                     include: {
-                        _count: {
-                            select: {
-                                subjects: true
+                        days: {
+                            include: {
+                                _count: {
+                                    select: {
+                                        subjects: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -110,26 +126,29 @@ export async function getAllTables({ page, search }: GetTablesProps): Promise<Se
             skip: (page - 1) * 10,
             take: 10
         })
+        console.log("🚀 ~ getLibraryTables ~ library:", library)
 
-        const totalTables = await prisma.table.count({
+        const totalTables = await prisma.library.count({
             where: {
-                isPublic: true,
-                name: { contains: search?.name, mode: "insensitive" },
-                id: searchId,
-            }
+                tables: {
+                    every: {
+                        name: { contains: search?.name, mode: "insensitive" },
+                        id: searchId,
+                    }
+                }
+            },
         })
+        const libraryTables = library.map(({ tables }) => tables.map(table => ({
+            ...table,
+            days: table.days.map(day => ({ ...day, subjects: day._count.subjects }))
+        }))).flat()
+        console.log("🚀 ~ libraryTables ~ libraryTables:", libraryTables)
         return {
             statusCode: 200,
             successMessage: "Tables fetched successfully",
             status: "Success",
             data: {
-                tables: tables.map(table => ({
-                    ...table,
-                    days: table.days.map(day => ({
-                        ...day,
-                        subjects: day._count.subjects
-                    }))
-                })),
+                tables: libraryTables,
                 metadata: {
                     hasNextPage: totalTables > page * 10,
                     totalPages: Math.ceil(totalTables / 10)
@@ -224,7 +243,7 @@ export async function getTableById({ tableId }: Props): Promise<ServerResponse<{
 
 export async function copyTable({ tableId, studentId }: Props): Promise<ServerResponse<null>> {
     try {
-        const table = await prisma.table.findUnique({
+        const userTable = await prisma.table.findUnique({
             where: {
                 id: tableId
             },
@@ -236,14 +255,14 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
                 }
             }
         })
-        if (!table) {
+        if (!userTable) {
             return {
                 statusCode: 404,
                 errorMessage: "Table not found",
                 status: "Error",
             }
         }
-        const daysArray = table.days.map(day => ({
+        const daysArray = userTable.days.map(day => ({
             name: day.name,
             subjects: day.subjects.map(subject => ({
                 name: subject.name,
@@ -255,7 +274,7 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
         }))
         await prisma.table.create({
             data: {
-                name: table.name,
+                name: userTable.name,
                 userId: studentId as number,
                 days: {
                     create: daysArray.map(day => ({
@@ -265,7 +284,7 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
                         }
                     }))
                 },
-                isPublic: table.isPublic
+                isPublic: userTable.isPublic
             }
         })
         const user = await prisma.user.findUnique({
@@ -274,6 +293,16 @@ export async function copyTable({ tableId, studentId }: Props): Promise<ServerRe
             },
             select: {
                 publicId: true
+            }
+        })
+        await prisma.table.update({
+            where: {
+                id: tableId
+            },
+            data: {
+                tableViews: {
+                    increment: 1
+                }
             }
         })
         revalidatePath(`/${createPublicId(user?.publicId as string, studentId as number)}`)
