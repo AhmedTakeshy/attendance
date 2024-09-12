@@ -104,9 +104,10 @@ CREATE TABLE "Table" (
     "publicId" TEXT NOT NULL,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "userId" INTEGER NOT NULL,
-    "libraryId" INTEGER,
+    "tableViews" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "libraryId" INTEGER,
 
     CONSTRAINT "Table_pkey" PRIMARY KEY ("id")
 );
@@ -141,8 +142,6 @@ CREATE TABLE "Subject" (
 CREATE TABLE "Library" (
     "id" SERIAL NOT NULL,
     "publicId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "tableId" INTEGER NOT NULL,
 
     CONSTRAINT "Library_pkey" PRIMARY KEY ("id")
 );

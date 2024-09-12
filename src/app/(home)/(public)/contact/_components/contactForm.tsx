@@ -54,7 +54,7 @@ export default function ContactForm() {
                 <form
                     onSubmit={form.handleSubmit(submitContact)}
                     className="w-full p-8 my-4 mr-auto shadow-2xl md:px-12 lg:w-9/12 lg:pl-20 lg:pr-40 rounded-2xl dark:bg-navy-800 bg-slate-200">
-                    <h1 className="text-5xl font-bold uppercase text-navy-900">Send us a <br /> message</h1>
+                    <h1 className="text-5xl font-bold uppercase text-navy-600">Send us a <br /> message</h1>
 
                     <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
                         <FormField
@@ -138,7 +138,7 @@ export default function ContactForm() {
                     <div className="flex items-center justify-between">
                         <SubmitButton
                             pending={isPending}
-                            className="w-1/2 p-3 my-2 text-sm font-bold tracking-wide uppercase transition-colors duration-500 rounded-lg font-man bg-blue-950 text-slate-100 focus:outline-none lg:w-1/4 hover:bg-blue-900">
+                            className="w-1/2 p-3 my-2 text-sm font-bold tracking-wide uppercase transition-colors duration-500 rounded-lg font-man bg-blueSecondary text-slate-100 focus:outline-none lg:w-1/4 hover:bg-navy-600">
                             Send Message
                         </SubmitButton>
                         <div className="flex items-center justify-between gap-2">

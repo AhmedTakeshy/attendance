@@ -106,19 +106,20 @@ model PasswordResetToken {
 }
 
 model Table {
-  id           Int                @id @default(autoincrement())
-  name         String
-  publicId     String             @unique @default(nanoid())
-  isPublic     Boolean            @default(false)
-  userId       Int
-  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  days         Day[]
-  libraryId    Int?
-  library      Library?           @relation(fields: [libraryId], references: [id])
-  publicViews  PublicTableView[]
-  privateViews PrivateTableView[]
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id               Int                @id @default(autoincrement())
+  name             String
+  publicId         String             @unique @default(nanoid())
+  isPublic         Boolean            @default(false)
+  userId           Int
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  days             Day[]
+  tableViews       Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  libraryId        Int?
+  library          Library?           @relation(fields: [libraryId], references: [id])
+  PublicTableView  PublicTableView[]
+  PrivateTableView PrivateTableView[]
 
   @@index([isPublic])
   @@index([userId])
@@ -164,8 +165,6 @@ model Subject {
 model Library {
   id       Int     @id @default(autoincrement())
   publicId String  @unique @default(nanoid())
-  name     String
-  tableId  Int
   tables   Table[]
 }
 

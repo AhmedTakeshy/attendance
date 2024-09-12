@@ -64,13 +64,21 @@ export async function createAttendanceTable(data: CreateAttendanceTableSchema): 
             }
         })
         if (isPublic) {
-            await prisma.library.create({
-                data: {
-                    tables: {
-                        connect: { id: table.id }
-                    }
+            const existingLibrary = await prisma.library.findFirst({
+                where: {
+                    tables: { some: { id: table.id } }
                 }
-            })
+            });
+
+            if (!existingLibrary) {
+                await prisma.library.create({
+                    data: {
+                        tables: {
+                            connect: { id: table.id }
+                        }
+                    }
+                });
+            }
         }
         revalidatePath(`/${createPublicId(user?.publicId as string, userId)}`)
         return {
