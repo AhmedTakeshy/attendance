@@ -37,7 +37,7 @@ export default function ProfileOptions() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button size={"icon"} className="absolute top-6 right-6">
+                <Button size={"icon"} className="absolute top-6 right-6 profileOptions">
                     <BsThreeDotsVertical size={25} />
                 </Button>
             </DropdownMenuTrigger>

@@ -71,12 +71,12 @@ export default function Profile({ data }: ProfileProps) {
         </div>
         <p className="text-gray-500">{data.student.role ? "Student" : "Student(Admin)"}</p>
       </div>
-      <div className="px-1 sm:px-4 md:px-8 mt-2">
+      <div className="px-1 sm:px-4 md:px-8 mt-2 tablesPlace">
         <div className="flex items-center space-x-4 mt-2 justify-end">
           {!data.student.emailVerified?.getDate() && (
             <SubmitButton
               onClick={handleVerification}
-              className="flex items-center !bg-brand-600 hover:!bg-brand-700 text-gray-100 text-sm transition duration-100">
+              className="flex items-center !bg-brand-600 hover:!bg-brand-700 text-gray-100 text-sm transition duration-100 verifyEmail">
               <FaCircleCheck size={15} />
               <span className="ml-2">Verify Email</span>
             </SubmitButton>)}

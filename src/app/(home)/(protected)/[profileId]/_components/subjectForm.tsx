@@ -31,7 +31,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                             <Input
                                 type="text"
                                 placeholder="Subject name..."
-                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base subjectName"
                                 {...field}
                             />
                         </FormControl>
@@ -41,7 +41,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
             </FormField>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant={"outline"} className="dark:bg-navy-700 ">
+                    <Button variant={"outline"} className="dark:bg-navy-700 startsAt">
                         Starts at
                     </Button>
                 </PopoverTrigger>
@@ -127,7 +127,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
             </Popover>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant={"outline"} className="dark:bg-navy-700 ">
+                    <Button variant={"outline"} className="dark:bg-navy-700 endsAt">
                         Ends at
                     </Button>
                 </PopoverTrigger>
@@ -216,7 +216,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                             <Input
                                 type="text"
                                 placeholder="Teacher name (optional)"
-                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base teacherName"
                                 {...field}
                             />
                         </FormControl>
@@ -239,7 +239,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                                         type="number"
                                         pattern="[0-9]*"
                                         placeholder="Attendance"
-                                        className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                        className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base attendanceNumber"
                                         {...field}
                                     />
                                 </FormControl>
@@ -249,7 +249,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                     </FormField>
                 </PopoverContent>
             </Popover>
-            <Button variant={"destructive"} onClick={() => onRemove(index)} className="sm:ml-auto ">
+            <Button variant={"destructive"} onClick={() => onRemove(index)} className="sm:ml-auto deleteSubject">
                 Delete Subject
             </Button>
         </div>

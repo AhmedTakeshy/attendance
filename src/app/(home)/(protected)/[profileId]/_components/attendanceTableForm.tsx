@@ -151,7 +151,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                                     id="tableName"
                                     type="text"
                                     placeholder="Table name..."
-                                    className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base"
+                                    className="hover:bg-white dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base tableName"
                                     {...field}
                                 />
                             </FormControl>
@@ -172,7 +172,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                                         control={form.control}
                                         name="isPublic"
                                         render={({ field }) => (
-                                            <FormItem className='flex items-center space-x-2'>
+                                            <FormItem className='flex items-center space-x-2 publicSwitch'>
                                                 <FormControl>
                                                     <Switch
                                                         id="isPublic"
@@ -193,7 +193,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                         </div>
                     ))}
                 </div>
-                <SubmitButton pending={isPending}>
+                <SubmitButton pending={isPending} className='createTable'>
                     {table ? "Update Table" : "Create Table"}
                 </SubmitButton>
             </form>

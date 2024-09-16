@@ -25,13 +25,13 @@ export default async function Students({ searchParams }: StudentsProps) {
     })
     return (
         <>
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-5 searchStudents">
                 <Search placeholder="Search students..." option1="email" option2="name" />
             </div>
             {response.status === "Success" ? (
                 <div className="flex flex-col justify-between">
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6">
-                        {response.data.students.map((student) => {
+                        {response.data.students.map((student, index) => {
                             const publicId = createPublicId(student.publicId, student.id)
                             return (
                                 <div
@@ -70,7 +70,7 @@ export default async function Students({ searchParams }: StudentsProps) {
                                             </p>
                                             <p className="text-sm font-normal text-gray-600">Tables</p>
                                         </div>
-                                        <Button asChild className="bg-brand-600 transition-colors duration-300 hover:bg-brand-800">
+                                        <Button asChild className="bg-brand-600 transition-colors duration-300 hover:bg-brand-800 viewStudent">
                                             <Link href={`/students/${publicId}?tablesPage=1`}>
                                                 View profile
                                             </Link>

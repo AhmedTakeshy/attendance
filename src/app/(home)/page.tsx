@@ -39,7 +39,7 @@ function CreateTableSection({ path, words, userId }: CreateTableSectionProps) {
           tables to track you attendance
         </div>
       </div>
-      <Button asChild>
+      <Button asChild className="createTableBtn">
         <Link href={`/${path === "login" ? "login" : `${userId}/create-table`}`} className="flex items-center bg-blue-500 hover:bg-blue-700 transition-colors duration-300">
           Create attendance table
         </Link>

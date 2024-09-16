@@ -44,7 +44,7 @@ export default function SubjectField({ day }: SubjectFieldProps) {
             <Button
                 type="button"
                 onClick={appendSubject}
-                className="col-span-2 sm:col-span-1 w-full sm:w-fit bg-brand-300 hover:bg-brand-300 dark:bg-navy-600 dark:hover:bg-navy-700 text-white place-self-end">
+                className="col-span-2 sm:col-span-1 w-full sm:w-fit bg-brand-300 hover:bg-brand-300 dark:bg-navy-600 dark:hover:bg-navy-700 text-white place-self-end addSubject">
                 Add Subject
             </Button>
         </>

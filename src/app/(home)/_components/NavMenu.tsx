@@ -49,7 +49,7 @@ export default function NavMenu() {
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                         <Link href="/library?page=1" legacyBehavior passHref>
-                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library</NavigationMenuLink>
+                            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} libraryBtn`}>Library</NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
@@ -73,7 +73,7 @@ export default function NavMenu() {
                     session.status === "authenticated" ?
                         <DropdownMenu data-testid={"auth-options"}>
                             <DropdownMenuTrigger asChild>
-                                <Avatar className="hover:cursor-pointer">
+                                <Avatar className="hover:cursor-pointer avatarBtn">
                                     <AvatarImage src={session.data.user.image || ""} alt={`${fullName}-image`} />
                                     <AvatarFallback>
                                         {fullName?.split(" ").map((name) => name.charAt(0)).join("")}
@@ -148,7 +148,7 @@ export default function NavMenu() {
                     <div className="items-center gap-3 flex">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Avatar className="hover:cursor-pointer">
+                                <Avatar className="hover:cursor-pointer avatarBtn">
                                     <AvatarImage src={session.data.user.image || ""} alt={`${fullName}-image`} />
                                     <AvatarFallback>
                                         {fullName?.split(" ").map((name) => name.charAt(0)).join("")}
@@ -231,7 +231,7 @@ export default function NavMenu() {
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
                                         <Link href="/library?page=1" legacyBehavior passHref>
-                                            <NavigationMenuLink onClick={() => setOpen(false)} className={navigationMenuTriggerStyle()}>Library</NavigationMenuLink>
+                                            <NavigationMenuLink onClick={() => setOpen(false)} className={`${navigationMenuTriggerStyle()} libraryBtn`}>Library</NavigationMenuLink>
                                         </Link>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
