@@ -20,11 +20,12 @@ export default function HighJoyRide() {
             return [
                 {
                     target: ".createTableBtn",
-                    title: <h1 className="font-semibold text-lg">Welcome to the Attendance App</h1>,
-                    content: "You need to log in before creating a new attendance table.",
+                    title: <h1 className="font-semibold text-lg">Welcome to Attendance tracking!</h1>,
+                    content: "We're glad you chose us! You can create a table for your academic schedule, add your subjects, and track your attendance. However, you first need to log in to access all the features we offer.",
                     spotlightClicks: true,
                     locale: { last: "Completed" },
                     spotlightPadding: 15,
+                    disableBeacon: true,
                 },
             ];
         }
@@ -35,7 +36,7 @@ export default function HighJoyRide() {
                     {
                         target: ".createTableBtn",
                         title: <h1 className="font-semibold text-lg">Congratulations 🎉</h1>,
-                        content: "Congratulations for taking the first step! Now you can create your first attendance table.",
+                        content: "Congratulations for taking the first step! Now you can create your first attendance table, or use one copy one from other students",
                         spotlightClicks: true,
                         spotlightPadding: 15,
                         disableBeacon: true,
@@ -43,7 +44,7 @@ export default function HighJoyRide() {
                     {
                         target: ".libraryBtn",
                         title: <h1 className="font-semibold text-lg">Library 📚</h1>,
-                        content: "Here you can find all attendance tables created by others.",
+                        content: "Here you can find all attendance tables created by others, use can see them or copy them",
                         spotlightClicks: true,
                     },
                     {
@@ -217,7 +218,7 @@ const JoyRideSSR = dynamic(() => import("react-joyride"), { ssr: false })
 const JoyRide = ({ steps, run, setRun }: JoyRideProps) => {
 
     const handleJoyride = (data: CallBackProps) => {
-        const { status, action, index } = data
+        const { status, } = data
         if (status.includes(STATUS.FINISHED) || status.includes(STATUS.SKIPPED)) {
             setRun(false);
         }
