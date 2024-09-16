@@ -9,10 +9,10 @@ import SimpleAttendanceTable from "./_components/simpleAttendanceTable";
 export default async function Home() {
   const words = ["easy", "responsive", "smart", "accessible"];
   const session = await auth();
-  const response = session?.user ? await getLastAttendanceTable({ studentId: returnPublicId(session?.user.id as string) }) : null;
+  const response = session?.user.id ? await getLastAttendanceTable({ studentId: returnPublicId(session?.user.id as string) }) : null;
 
   return (
-    session?.user ? (
+    session?.user.id ? (
       response?.status === "Success" ? (
         <SimpleAttendanceTable table={response.data.table} />
       ) : (
@@ -36,9 +36,10 @@ function CreateTableSection({ path, words, userId }: CreateTableSectionProps) {
         <div className="text-4xl mx-auto font-normal text-slate-600 dark:text-slate-500">
           Create
           <FlipWords words={words} /> <br />
-          tables for your academic schedule, <br /> <span className="text-black dark:text-white">
-            and track your attendance for them.
+          tables for your academic schedule, <br /> and <span className="text-black dark:text-white">
+            track your attendance
           </span>
+          for them.
         </div>
       </div>
       <Button asChild className="createTableBtn">
