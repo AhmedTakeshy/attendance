@@ -227,7 +227,6 @@ const JoyRide = ({ steps, run, setRun }: JoyRideProps) => {
         <JoyRideSSR
             steps={steps}
             run={run}
-            debug={true}
             continuous={true}
             showProgress={true}
             showSkipButton={true}
