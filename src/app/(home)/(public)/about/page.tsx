@@ -11,13 +11,16 @@ export default function About() {
                         <div className="w-full flex-col justify-center items-start gap-8 flex">
                             <div className="flex-col justify-start lg:items-start items-center gap-4 flex">
                                 <h6 className="text-brand-600 dark:text-brand-400 text-base font-normal leading-relaxed">About Us</h6>
-                                <div className="w-full flex-col justify-start lg:items-start items-center gap-3 flex">
+                                <article className="w-full flex-col justify-start lg:items-start items-center gap-3 flex">
 
                                     <h2 className="text-inherit text-5xl font-bold leading-[4rem] mb-7 lg:text-start text-center">The Tale of Our Achievement Story</h2>
                                     <p className="text-gray-600 dark:text-slate-400 text-base font-normal leading-relaxed lg:text-start text-center">
-                                        I, as a developer and designer, have always been fascinated by the intersection of design and technology. I have always been interested in how design can be used to solve problems and create new opportunities. I have always been interested in how design can be used to solve problems and create new opportunities.
+                                        I, as a developer and designer, have always been fascinated by the intersection of design and technology. I have been particularly interested in how design can be useful in solving problems and creating new opportunities. With that in mind, I decided to create a platform to help students who struggle with attendance tracking. On this platform, all students need to do is create a table for their academic year, add the subjects they are studying, and easily track their attendance.
                                     </p>
-                                </div>
+                                    <p className="text-gray-600 dark:text-slate-400 text-base font-normal leading-relaxed lg:text-start text-center">
+                                        I have been working on this project for a while now, and I am excited to share it with you. I hope you find it useful, and I look forward to hearing your feedback.
+                                    </p>
+                                </article>
                             </div>
                             {/* <div className="w-full flex-col justify-center items-start gap-6 flex">
                                     <div className="w-full justify-start items-center gap-8 grid md:grid-cols-2 grid-cols-1">
