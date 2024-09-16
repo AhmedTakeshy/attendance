@@ -36,7 +36,9 @@ function CreateTableSection({ path, words, userId }: CreateTableSectionProps) {
         <div className="text-4xl mx-auto font-normal text-slate-600 dark:text-slate-500">
           Create
           <FlipWords words={words} /> <br />
-          tables to track you attendance
+          tables for your academic schedule, <br /> <span className="text-black dark:text-white">
+            and track your attendance for them.
+          </span>
         </div>
       </div>
       <Button asChild className="createTableBtn">
