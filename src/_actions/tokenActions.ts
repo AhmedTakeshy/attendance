@@ -107,7 +107,7 @@ export async function sendVerificationToken(email: string, firstName: string): P
     } catch (error) {
         return {
             status: "Error",
-            errorMessage: "Something went wrong!",
+            errorMessage: "Something went wrong with verification email!",
             statusCode: 500,
         }
     }
