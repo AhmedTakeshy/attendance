@@ -191,7 +191,7 @@ export default function HighJoyRide() {
                 steps={steps}
                 run={run}
                 setRun={setRun} />
-            <div className="group fixed top-28 sm:top-40 left-8 flex items-center">
+            <div className="group absolute top-28 sm:top-40 left-8 flex items-center">
                 <Button
                     size={"icon"}
                     variant={"ghost"}
