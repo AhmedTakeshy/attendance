@@ -220,8 +220,12 @@ export async function getTableById({ tableId }: Props): Promise<ServerResponse<{
             include: {
                 days: {
                     include: {
-                        subjects: true
-                    }
+                        subjects: {
+                            orderBy: {
+                                id: "asc"
+                            }
+                        },
+                    },
                 }
             }
         })
@@ -454,7 +458,11 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: Abs
                         name: dayName
                     },
                     include: {
-                        subjects: true
+                        subjects: {
+                            where: {
+                                id: subjectId
+                            }
+                        }
                     }
                 }
             }
@@ -466,8 +474,8 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: Abs
                 status: "Error",
             }
         }
-        const day = table.days[0]
-        const subject = day.subjects.find(subject => subject.id === subjectId)
+        const day = table.days.find(day => day.name === dayName)
+        const subject = day?.subjects.find(subject => subject.id === subjectId)
         if (!subject) {
             return {
                 statusCode: 404,
@@ -475,12 +483,14 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: Abs
                 status: "Error",
             }
         }
-        await prisma.subject.update({
+        const updatedValue = await prisma.subject.update({
             where: {
                 id: subject.id
             },
             data: {
-                absence: subject.absence + 1
+                absence: {
+                    increment: 1
+                }
             }
         })
         revalidatePath(`/${studentId}/${tableId}`)
@@ -521,7 +531,11 @@ export async function removeAbsence({ tableId, studentId, dayName, subjectId }: 
                         name: dayName
                     },
                     include: {
-                        subjects: true
+                        subjects: {
+                            where: {
+                                id: subjectId
+                            }
+                        }
                     }
                 }
             }
@@ -533,8 +547,8 @@ export async function removeAbsence({ tableId, studentId, dayName, subjectId }: 
                 status: "Error",
             }
         }
-        const day = table.days[0]
-        const subject = day.subjects.find(subject => subject.id === subjectId)
+        const day = table.days.find(day => day.name === dayName)
+        const subject = day?.subjects.find(subject => subject.id === subjectId)
         if (!subject) {
             return {
                 statusCode: 404,
@@ -547,7 +561,9 @@ export async function removeAbsence({ tableId, studentId, dayName, subjectId }: 
                 id: subject.id
             },
             data: {
-                absence: subject.absence - 1
+                absence: {
+                    decrement: 1,
+                },
             }
         })
         revalidatePath(`/${studentId}/${tableId}`)

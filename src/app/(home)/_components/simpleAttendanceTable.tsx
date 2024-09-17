@@ -1,5 +1,5 @@
 "use client"
-import { addAbsence, TableObj } from '@/_actions/tableActions'
+import { addAbsence, removeAbsence, TableObj } from '@/_actions/tableActions'
 import SubmitButton from '@/_components/submitButton'
 import { Button } from '@/_components/ui/button'
 import { Table as TableRoot, TableHeader, TableRow, TableHead, TableBody, TableCell, TableCaption, } from '@/_components/ui/table'
@@ -7,7 +7,7 @@ import { createPublicId } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { TbExposurePlus1 } from "react-icons/tb";
+import { TbExposureMinus1, TbExposurePlus1 } from "react-icons/tb";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { DayName } from '@prisma/client'
 import { toast } from 'sonner'
@@ -25,9 +25,10 @@ type SimpleAttendanceTableProps = {
 export default function SimpleAttendanceTable({ table }: SimpleAttendanceTableProps) {
     const { data: session } = useSession()
     const pathname = usePathname()
-    const [isPending, setIsPending] = useState<{ [key: number]: boolean }>({})
+    const [isAddPending, setIsAddPending] = useState<{ [key: number]: boolean }>({})
+    const [isRemovePending, setIsRemovePending] = useState<{ [key: number]: boolean }>({})
     const [mobWidth, setMobWidth] = useState<boolean>(typeof window !== "undefined" ? window.innerWidth < 640 : false)
-    const [selectedDay, setSelectedDay] = useState<DayName | undefined>(table.days[new Date().getDay() - 1]?.name)
+    const [selectedDay, setSelectedDay] = useState<DayName>(table.days[new Date().getDay() - 1]?.name)
 
     const currentDay = useMemo(() => table.days.find(day => day.name === selectedDay), [selectedDay, table.days])
     const today = useMemo(() => table.days[new Date().getDay() - 1]?.name, [table.days])
@@ -35,10 +36,12 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
     const notForPublic = useMemo(() => !pathname.includes("students") && !pathname.includes("library"), [pathname])
 
     const handleDayChange = (dayName: DayName) => setSelectedDay(dayName)
+    const handleColor = (absence: number, attendance: number) => {
+        return (absence / attendance) * 100 >= 100 ? "text-rose-700" : (absence / attendance) * 100 >= 75 ? "text-orange-500" : (absence / attendance) * 100 >= 50 ? "text-yellow-500" : "text-green-500"
+    }
 
-
-    async function handleAbsence(dayName: DayName, subjectId: number) {
-        setIsPending(prev => ({ ...prev, [subjectId]: true }))
+    async function handleAddAbsence(dayName: DayName, subjectId: number) {
+        setIsAddPending(prev => ({ ...prev, [subjectId]: true }))
         try {
             const res = await addAbsence({
                 tableId: table.id as number,
@@ -53,7 +56,29 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
         } catch (error) {
             toast.error("Something went wrong!")
         }
-        setIsPending(prev => ({ ...prev, [subjectId]: false }))
+        finally {
+            setIsAddPending(prev => ({ ...prev, [subjectId]: false }))
+        }
+    }
+
+    async function handleRemoveAbsence(dayName: DayName, subjectId: number) {
+        setIsRemovePending(prev => ({ ...prev, [subjectId]: true }))
+        try {
+            const res = await removeAbsence({
+                tableId: table.id as number,
+                studentId: table.userId as number,
+                dayName,
+                subjectId,
+            })
+
+            res.status === "Success"
+                ? toast.success("Absence removed successfully")
+                : toast.error("Failed to remove absence");
+        } catch (error) {
+            toast.error("Something went wrong!")
+        } finally {
+            setIsRemovePending(prev => ({ ...prev, [subjectId]: false }))
+        }
     }
 
     useEffect(() => {
@@ -133,7 +158,7 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                             <SelectGroup>
                                                 {table.days.map((day) => (
                                                     <SelectItem
-                                                        key={day.id}
+                                                        key={day.name}
                                                         value={day.name}
                                                         className='capitalize dark:text-white text-slate-900'>
                                                         {day.name.toLowerCase()}
@@ -157,26 +182,38 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                     {currentDay && currentDay.subjects.length > 0 ?
                                         currentDay.subjects.map((subject) => (
                                             <div
-                                                key={subject.id}
+                                                key={`${subject.publicId}`}
                                                 className={`flex flex-col items-center ${notForPublic ? "" : "pt-4"} gap-2 ${currentDay.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
                                                 {notForPublic && (
-                                                    <SubmitButton
-                                                        disabled={!notForPublic}
-                                                        onClick={() => handleAbsence(currentDay.name, subject.id)}
-                                                        pending={isPending[subject.id] || false}
-                                                        className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
-                                                        <TbExposurePlus1 size={20} />
-                                                        Absence
-                                                    </SubmitButton>
+                                                    <div className="flex sm:flex-row flex-col items-center justify-center gap-2">
+                                                        <SubmitButton
+                                                            disabled={!notForPublic}
+                                                            onClick={() => handleAddAbsence(currentDay.name, subject.id)}
+                                                            pending={isAddPending[subject.id] || false}
+                                                            className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
+                                                            <TbExposurePlus1 size={20} />
+                                                            Absence
+                                                        </SubmitButton>
+                                                        <SubmitButton
+                                                            variant={"destructive"}
+                                                            disabled={!notForPublic}
+                                                            onClick={() => handleRemoveAbsence(currentDay.name, subject.id)}
+                                                            pending={isRemovePending[subject.id] || false}
+                                                            className={`flex gap-2 items-center font-bold !bg-rose-500 hover:!bg-rose-600 ${mobWidth ? "order-1" : "order-none"}`}>
+                                                            <TbExposureMinus1 size={20} />
+                                                            Absence
+                                                        </SubmitButton>
+                                                    </div>
                                                 )}
                                                 <p>{subject.name}</p>
                                                 <p>{subject.teacher}</p>
                                                 <p>{subject.startTime}</p>
                                                 <p>{subject.endTime}</p>
                                                 <p>{subject.attendance}</p>
-                                                <p>{subject.absence}</p>
+                                                <p className={`${handleColor(subject.absence, subject.attendance)}`}>{subject.absence}</p>
                                             </div>
-                                        )) : (
+                                        )
+                                        ) : (
                                             <p className={`flex flex-col items-center text-center col-span-2 mt-4 sm:mt-20 text-lg`}>
                                                 No subjects for today.
                                             </p>
@@ -185,7 +222,8 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                             </TableRow>
                         ) : (
                             // little details
-                            table.days.map((day) => (
+                            table.days.map((day) =>
+                            (
                                 <TableRow
                                     key={day.id}
                                     className={`hover:bg-transparent ${mobWidth ? " flex flex-col items-center" : ""}`}>
@@ -206,24 +244,37 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                         {day.subjects.length > 0 ?
                                             day.subjects.map((subject) => (
                                                 <div
-                                                    key={subject.id}
+                                                    key={subject.publicId}
                                                     className={`flex flex-col items-center ${notForPublic ? "" : "pt-4"} gap-2 ${day.subjects.length > 1 ? "col-span-1" : "col-span-2"}`}>
                                                     {notForPublic && (
-                                                        <SubmitButton
-                                                            disabled={!notForPublic}
-                                                            onClick={() => handleAbsence(day.name, subject.id)}
-                                                            pending={isPending[subject.id] || false}
-                                                            className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
-                                                            <TbExposurePlus1 size={20} />
-                                                            Absence
-                                                        </SubmitButton>
+                                                        <div className="flex sm:flex-row flex-col items-center justify-center gap-2">
+                                                            <SubmitButton
+                                                                disabled={!notForPublic}
+                                                                onClick={() => handleAddAbsence(day.name, subject.id)}
+                                                                pending={isAddPending[subject.id] || false}
+                                                                className={`flex gap-2 items-center font-bold ${mobWidth ? "order-1" : "order-none"}`}>
+                                                                <TbExposurePlus1 size={20} />
+                                                                Absence
+                                                            </SubmitButton>
+                                                            <SubmitButton
+                                                                variant={"destructive"}
+                                                                disabled={!notForPublic}
+                                                                onClick={() => handleRemoveAbsence(day.name, subject.id)}
+                                                                pending={isRemovePending[subject.id] || false}
+                                                                className={`flex gap-2 items-center font-bold !bg-rose-500 hover:!bg-rose-600 ${mobWidth ? "order-1" : "order-none"}`}>
+                                                                <TbExposureMinus1 size={20} />
+                                                                Absence
+                                                            </SubmitButton>
+                                                        </div>
                                                     )}
                                                     <p>{subject.name}</p>
                                                     <p>{subject.teacher}</p>
                                                     <p>{subject.startTime}</p>
                                                     <p>{subject.endTime}</p>
                                                     <p>{subject.attendance}</p>
-                                                    <p>{subject.absence}</p>
+                                                    <p className={`${handleColor(subject.absence, subject.attendance)}`}>
+                                                        {subject.absence}
+                                                    </p>
                                                 </div>
                                             ))
                                             : (
@@ -234,7 +285,8 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
                                         }
                                     </TableCell>
                                 </TableRow>
-                            )))}
+                            )
+                            ))}
                     </TableBody>
                 </TableRoot>
             </div>

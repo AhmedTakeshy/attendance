@@ -216,7 +216,7 @@ export function SubjectForm({ index, name, onRemove }: SubjectFormProps) {
                             <Input
                                 type="text"
                                 placeholder="Teacher name (optional)"
-                                className="hover:bg-white sm:w-auto dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base teacherName"
+                                className="hover:bg-white sm:w-full dark:bg-navy-800 dark:shadow-navy-400 placeholder:text-base teacherName"
                                 {...field}
                             />
                         </FormControl>
