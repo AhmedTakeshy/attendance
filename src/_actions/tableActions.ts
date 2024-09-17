@@ -483,7 +483,7 @@ export async function addAbsence({ tableId, studentId, dayName, subjectId }: Abs
                 status: "Error",
             }
         }
-        const updatedValue = await prisma.subject.update({
+        await prisma.subject.update({
             where: {
                 id: subject.id
             },
@@ -553,6 +553,13 @@ export async function removeAbsence({ tableId, studentId, dayName, subjectId }: 
             return {
                 statusCode: 404,
                 errorMessage: "Subject not found",
+                status: "Error",
+            }
+        }
+        if (subject.absence === 0) {
+            return {
+                statusCode: 400,
+                errorMessage: "Absence already at 0",
                 status: "Error",
             }
         }

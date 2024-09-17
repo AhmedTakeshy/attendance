@@ -51,8 +51,8 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
             })
 
             res.status === "Success"
-                ? toast.success("Absence added successfully")
-                : toast.error("Failed to add absence");
+                ? toast.success(res.successMessage)
+                : toast.error(res.errorMessage);
         } catch (error) {
             toast.error("Something went wrong!")
         }
@@ -72,8 +72,8 @@ export default function SimpleAttendanceTable({ table }: SimpleAttendanceTablePr
             })
 
             res.status === "Success"
-                ? toast.success("Absence removed successfully")
-                : toast.error("Failed to remove absence");
+                ? toast.success(res.successMessage)
+                : toast.error(res.errorMessage);
         } catch (error) {
             toast.error("Something went wrong!")
         } finally {
