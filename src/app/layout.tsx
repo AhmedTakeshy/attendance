@@ -3,7 +3,7 @@ import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
 import { Toaster } from "@/_components/ui/sonner";
-// import NextWebVitals from "nextlevelpackage";
+import NextWebVitals from "nextlevelpackage";
 
 
 const dm = DM_Sans({
@@ -117,7 +117,7 @@ export default async function RootLayout({ children }: Props) {
         >
 
           {children}
-          {/* <NextWebVitals /> */}
+          <NextWebVitals />
           <Toaster richColors />
         </ThemeProvider>
       </body>
