@@ -36,7 +36,6 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
         startTime: "08:00 AM",
         endTime: "09:00 AM",
         attendance: 0,
-        absence: 0,
     }
 
     const days = [
@@ -113,7 +112,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                 return
             }
             const { tableName, isPublic, userId, days } = data
-            let res;
+            let res
             table
                 ? res = await updateTable({ userId, tableName, isPublic, days }, { tableId: table.id, studentId: returnPublicId(studentId) })
                 : res = await createAttendanceTable({ userId, tableName, isPublic, days });
@@ -128,8 +127,9 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
             toast("Error!", {
                 description: "Something went wrong with the form data. Please try again.",
             })
+        } finally {
+            setIsPending(false)
         }
-        setIsPending(false)
     }
 
     return (
@@ -177,6 +177,7 @@ export default function AttendanceTableForm({ studentId, table }: Readonly<Atten
                                                     <Switch
                                                         id="isPublic"
                                                         checked={field.value}
+                                                        name={field.name}
                                                         onCheckedChange={field.onChange}
                                                     />
                                                 </FormControl>

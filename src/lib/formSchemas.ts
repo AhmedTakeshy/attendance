@@ -110,7 +110,7 @@ const subjectSchema = z.object({
     startTime: z.string(),
     endTime: z.string(),
     attendance: z.coerce.number().min(0).nonnegative({ message: "Attendance must be a non-negative number" }),
-    absence: z.coerce.number().min(0).nonnegative({ message: "Absence must be a non-negative number" }),
+    // absence: z.coerce.number().min(0).nonnegative({ message: "Absence must be a non-negative number" }),
 })
 // .refine(({ startTime, endTime }) => {
 //     const start = convertTo24Hour(startTime);
@@ -128,14 +128,14 @@ const daysSchema = z.object({
     Wednesday: z.object({ subjects: z.array(subjectSchema).optional() }),
     Thursday: z.object({ subjects: z.array(subjectSchema).optional() }),
     Friday: z.object({ subjects: z.array(subjectSchema).optional() }),
-    Saturday: z.object({ subjects: z.array(subjectSchema) }), // Can be empty
-    Sunday: z.object({ subjects: z.array(subjectSchema) }),   // Can be empty
+    Saturday: z.object({ subjects: z.array(subjectSchema).optional() }), // Can be empty
+    Sunday: z.object({ subjects: z.array(subjectSchema).optional() }),   // Can be empty
 });
 
 export const createAttendanceTableSchema = z.object({
     tableName: z.string()
         .min(3, { message: "Table name must be at least 3 characters" })
-        .max(50, { message: "Table name must be at most 50 characters" }),
+        .max(100, { message: "Table name must be at most 100 characters" }),
     isPublic: z.boolean(),
     userId: z.number(),
     days: daysSchema

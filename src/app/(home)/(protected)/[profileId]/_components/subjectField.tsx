@@ -27,7 +27,6 @@ export default function SubjectField({ day }: SubjectFieldProps) {
             startTime: "08:00 AM",
             endTime: "09:00 AM",
             attendance: 0,
-            absence: 0,
         });
     }
 
